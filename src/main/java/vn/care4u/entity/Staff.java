@@ -1,6 +1,5 @@
 package vn.care4u.entity;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,15 +14,16 @@ import lombok.Setter;
 @Setter
 
 @Entity
-@Table(name="patients")
-public class Patient extends User {
+@Table(name = "staffs")
+public class Staff extends User{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
-	@Column(name="insurance", columnDefinition = "nvarchar(255)")
-	String insurance;
 	
-	@Column(name="ralativePhone", columnDefinition = "nvarchar(255)")
-	String ralativePhone;
+	@Column(name = "speciality", columnDefinition = "nvarchar(100)")
+	private String speciality;
+	
 
 }

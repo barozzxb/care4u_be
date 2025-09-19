@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,7 +35,7 @@ public abstract class User implements Serializable{
 	@Column(name = "gender", columnDefinition = "nvarchar(10)")
 	protected String gender;
 	
-	@Column(name = "firstname", columnDefinition = "date")
+	@Column(name = "dob", columnDefinition = "date")
 	protected LocalDate dob;
 	
 	@Column(name = "address", columnDefinition = "nvarchar(50)")

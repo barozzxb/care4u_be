@@ -35,12 +35,12 @@ public class Drug implements Serializable{
 	@Column(name = "origin", columnDefinition = "nvarchar(255)")
 	private String origin;
 	
-	@Column(name = "usage", columnDefinition = "nvarhcar(5000)")
+	@Column(name = "dusage", columnDefinition = "text")
 	private String usage;
 	
-	@Column(name = "function", columnDefinition = "nvarchar(5000)")
+	@Column(name = "dfunction", columnDefinition = "text")
 	private String function;
 	
-	@Column(name = "otherinfo", columnDefinition = "nvarchar(5000)")
+	@Column(name = "otherinfo", columnDefinition = "text")
 	private String otherinfo;
 }
