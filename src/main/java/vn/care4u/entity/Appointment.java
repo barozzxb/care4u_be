@@ -44,7 +44,7 @@ public class Appointment implements Serializable{
 	private String place;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name="status", columnDefinition = "String")
+	@Column(name="status", columnDefinition = "nvarchar(20)")
 	private EStatus status;
 	
 	@Column(name="notes", columnDefinition = "nvarchar(255)")
