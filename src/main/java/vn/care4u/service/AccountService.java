@@ -12,12 +12,5 @@ public interface AccountService {
 
 	Optional<Account> findById(String id);
 
-	/**
-	 * Input email and password to login
-	 */
-	AuthResponse login(String email, String password);
-
-	String register(String email, String password, ERole role);
-
 
 }

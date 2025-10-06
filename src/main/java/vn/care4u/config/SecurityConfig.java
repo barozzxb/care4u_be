@@ -63,10 +63,11 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/common/otp/**").permitAll()
+						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.requestMatchers("/").permitAll()
-						.requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

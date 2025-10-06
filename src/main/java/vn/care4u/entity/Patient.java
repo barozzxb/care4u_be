@@ -3,6 +3,8 @@ package vn.care4u.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,4 +28,7 @@ public class Patient extends User {
 	@Column(name="ralativePhone", columnDefinition = "nvarchar(255)")
 	String ralativePhone;
 
+	@OneToOne
+	@JoinColumn(name = "account_email")
+	private Account account;
 }
