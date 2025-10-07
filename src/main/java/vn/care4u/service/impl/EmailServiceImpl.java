@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService{
 			String htmlContent = EmailTemplate.sendOTPEmail(to, otp);
 			
 			message.setSubject("Care4U - Mã OTP xác thực email");
-			message.setRecipients(MimeMessage.RecipientType.TO, to);
+			message.setRecipients(MimeMessage.RecipientType.TO, to.trim());
 			message.setText(htmlContent, "utf-8", "html");
 			sender.send(message);
 		} catch (Exception e) {

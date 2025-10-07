@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class OTPSendRequest {
+public class OTPVerifyRequest {
 	
 	private String email;
+	private String otp;
 }
