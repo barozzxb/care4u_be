@@ -12,6 +12,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,4 +58,12 @@ public class Account implements Serializable{
 	
 	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Staff staff;
+	
+	@PrePersist
+	private void onCreate() {
+		if(status == null) {
+			status = false;
+		}
+		createdAt = new Timestamp(System.currentTimeMillis());
+	}
 }

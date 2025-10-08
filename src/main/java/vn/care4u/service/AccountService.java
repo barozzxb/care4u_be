@@ -12,5 +12,7 @@ public interface AccountService {
 
 	Optional<Account> findById(String id);
 
+	void setActive(String id);
+
 
 }

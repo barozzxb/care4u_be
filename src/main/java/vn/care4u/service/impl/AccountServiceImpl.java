@@ -57,5 +57,12 @@ public class AccountServiceImpl implements AccountService{
 	public boolean existsById(String id) {
 		return accRepo.existsById(id);
 	}
+	
+	@Override
+	public void setActive(String id) {
+		Account acc = accRepo.findById(id).orElseThrow(() -> new GeneralException(ErrorCode.ACCOUNT_NOT_FOUND));
+		acc.setStatus(true);
+		accRepo.save(acc);
+	}
 
 }
