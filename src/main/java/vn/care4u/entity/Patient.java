@@ -1,9 +1,14 @@
 package vn.care4u.entity;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -31,4 +36,7 @@ public class Patient extends User {
 	@OneToOne
 	@JoinColumn(name = "account_email")
 	private Account account;
+	
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Prediction> predictions = new ArrayList<>();
 }

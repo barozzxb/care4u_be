@@ -1,19 +1,16 @@
-package vn.care4u.model.response;
+package vn.care4u.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-public class ApiResponse<T> {
+public class AccountDTO {
 
-	private int status;
-	private String message;
-	private String errorCode;
-	private T body;
+	private String email;
 	
 }

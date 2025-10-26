@@ -22,7 +22,14 @@ public enum ErrorCode {
 	NOTIFICATION_NOT_FOUND ("Thông báo không tồn tại"), 
 	
 	
-	INVALID_TOKEN("Token không hợp lệ"),;
+	INVALID_TOKEN("Token không hợp lệ"), 
+	
+	
+	PATIENT_NOT_FOUND("Thông tin bệnh nhân không hợp lệ"), 
+	
+	
+	DEPARTMENT_NOT_FOUND("Chuyên khoa không tồn tại"), 
+	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"),;
 	
 	private final String message;
 	
