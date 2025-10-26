@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import vn.care4u.model.request.OTPVerifyRequest;
@@ -23,6 +28,13 @@ public class VerifyOTPAPI {
 	@Operation(summary = "Send OTP", description = "Send OTP to email")
 	@PostMapping("/send")
 	public ApiResponse<String> sendOTP(@RequestBody String email) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode jsonNode = mapper.readTree(email);
+			email = jsonNode.get("email").asText();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		otpService.sendOTP(email);
 		return ApiResponse.<String>builder()
 				.status(200)
