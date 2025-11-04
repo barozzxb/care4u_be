@@ -1,5 +1,6 @@
 package vn.care4u.service.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 					.id(departmentDTO.getId())
 					.name(departmentDTO.getName())
 					.description(departmentDTO.getDescription())
+					.createdAt(new Timestamp(System.currentTimeMillis()))
 					.build();
 			departmentRepo.save(department);
 		} catch (Exception e) {

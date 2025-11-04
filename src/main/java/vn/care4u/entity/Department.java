@@ -1,6 +1,7 @@
 package vn.care4u.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -38,6 +39,9 @@ public class Department implements Serializable{
 	
 	@Column(name = "description", columnDefinition = "nvarchar(255)")
 	private String description;
+	
+	@Column(name = "createdAt", columnDefinition = "timestamp")
+	private Timestamp createdAt;
 
 	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Doctor> doctors;
