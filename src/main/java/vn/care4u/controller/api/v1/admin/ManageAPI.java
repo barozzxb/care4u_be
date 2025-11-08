@@ -20,7 +20,7 @@ import vn.care4u.service.DepartmentService;
 @RestController
 @RequestMapping("/api/v1/departments")
 @Tag(name = "Department", description = "Department API for Admin to manage")
-public class DepartmentAPI {
+public class ManageAPI {
 
 	@Autowired
 	private DepartmentService depServ;

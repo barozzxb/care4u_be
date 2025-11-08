@@ -3,9 +3,8 @@ package vn.care4u.service.impl;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ import vn.care4u.service.RedisService;
 import vn.care4u.service.StaffService;
 import vn.care4u.service.UserDetailService;
 import vn.care4u.utils.JwtUtils;
-
+ 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
@@ -57,8 +56,6 @@ public class AuthServiceImpl implements AuthService{
 	
 	private final PasswordEncoder passwordEncoder;
 	
-	private final AuthenticationManager authManager;
-	
 	private final RedisService redisService;
 	
 	public Optional<Account> findById(String id) {
@@ -75,6 +72,10 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public AuthResponse login(LoginRequest request) {
 		//authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+		
+		if (request.getEmail().isBlank() || request.getPassword().isBlank()) {
+			throw new GeneralException(ErrorCode.NULL_INFORMATION);
+		}
 		
 		Account acc = accRepo.findById(request.getEmail()).orElseThrow(() -> new GeneralException(ErrorCode.ACCOUNT_NOT_FOUND));
 		
@@ -122,8 +123,11 @@ public class AuthServiceImpl implements AuthService{
 	@Transactional(rollbackOn = Exception.class)
 	@Override
 	public String register(String email, String password,ERole role) {
-		if (email == null || email.isEmpty() || password == null || password.isEmpty() || role == null) {
-			throw new GeneralException(ErrorCode.INVALID_INFORMATION);
+//		if (email == null || email.isEmpty() || password == null || password.isEmpty() || role == null) {
+//			throw new GeneralException(ErrorCode.NULL_INFORMATION);
+//		}
+		if (StringUtils.isAnyBlank(email) || StringUtils.isAnyBlank(password)){
+			throw new GeneralException(ErrorCode.NULL_INFORMATION);
 		}
 		if(accRepo.existsById(email)) {
 			throw new GeneralException(ErrorCode.ACCOUNT_EXISTED);
