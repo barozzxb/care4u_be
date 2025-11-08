@@ -11,8 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.care4u.enumeration.EStatus;
 
-import javax.net.ssl.SSLSession;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
