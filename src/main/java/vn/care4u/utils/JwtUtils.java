@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import vn.care4u.enumeration.ERole;
 
 @Component
+@Slf4j
 public class JwtUtils {
 
 	@Value("${jwt.secret}")
@@ -36,10 +38,11 @@ public class JwtUtils {
 	
 	public String generateRefreshToken(String username) {
 		Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+		log.info("Generating refresh token for user: " + username);
 		return Jwts.builder()
 				.setSubject(username)
 				.setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs * 24)) // Refresh token có thời hạn dài hơn
+				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
 				.signWith(key, SignatureAlgorithm.HS512)
 				.compact();
 	}
