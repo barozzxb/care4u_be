@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/doctor/appointments")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('DOCTOR')")
+@PreAuthorize("hasAuthority('DOCTOR')")
 @Slf4j
 public class AppointmentAPI {
 

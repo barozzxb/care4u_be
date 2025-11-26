@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.care4u.entity.Appointment;
+import vn.care4u.entity.Measurement;
 import vn.care4u.entity.MedicalRecord;
 import vn.care4u.entity.Prescription;
 import vn.care4u.enumeration.EStatus;
@@ -35,6 +36,8 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     private final DoctorRepository doctorRepo;
     private final PatientRepository patientRepo;
 //    private final DrugRepository drugRepo;
+
+    private final MeasurementRepository measurementRepo;
 
     @Override
     public List<AppointmentDTO> listAppointments(String q) {
@@ -125,14 +128,49 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         var patient = patientRepo.findById(req.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
+        // 1. TẠO & LƯU PHIẾU KHÁM (MEDICAL RECORD)
         var r = new MedicalRecord();
         r.setDoctor(doctor);
         r.setPatient(patient);
-        r.setDiagnosis(req.getDiagnosis());
+
+        // Map các trường Text
         r.setSymptoms(req.getSymptoms());
+        r.setPhysicalExam(req.getPhysicalExam()); // Mới
+        r.setDiagnosis(req.getDiagnosis());
+        r.setConclusion(req.getConclusion());     // Mới
+        r.setTreatment(req.getTreatment());
+        r.setAdvice(req.getAdvice());             // Mới
         r.setNotes(req.getNotes());
-        try { r.getClass().getMethod("setCreatedAt", LocalDateTime.class); r.setCreatedAt(LocalDateTime.now()); } catch (Exception ignore) {}
-        return recordRepo.save(r);
+
+        // Lưu xuống DB trước để có ID
+        r = recordRepo.save(r);
+
+        // 2. TẠO & LƯU SINH HIỆU (MEASUREMENT) - NẾU CÓ DỮ LIỆU
+        // Kiểm tra sơ bộ xem có nhập sinh hiệu không để tránh lưu rác
+        if (hasMeasurementData(req)) {
+            var m = new Measurement();
+            m.setPatient(patient);
+            m.setMedicalRecord(r); // Link vào phiếu khám vừa tạo
+
+            m.setSystolicBloodPressure(req.getSystolicBP());
+            m.setDiastolicBloodPressure(req.getDiastolicBP());
+            m.setTemperature(req.getTemperature());
+            m.setHeartRate(req.getHeartRate());
+            m.setRespiratoryRate(req.getRespiratoryRate());
+            m.setSpo2(req.getSpo2());
+            m.setHeight(req.getHeight());
+            m.setWeight(req.getWeight());
+            m.setBmi(req.getBmi());
+
+            measurementRepo.save(m);
+        }
+
+        return r;
+    }
+
+    private boolean hasMeasurementData(CreateMedicalRecordRequest req) {
+        return req.getHeight() != null || req.getWeight() != null
+                || req.getTemperature() != null || req.getSystolicBP() != null;
     }
 
     @Override
