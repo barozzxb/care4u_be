@@ -12,53 +12,56 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
 
+<<<<<<< Updated upstream
 import org.springframework.http.HttpMethod;
 
+=======
+>>>>>>> Stashed changes
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final AccountDetailServiceImpl accDetailServ;
-	private final JwtUtils jwtUtils;
-	private final CorsConfigurationSource corsConfigurationSource;
+    private final AccountDetailServiceImpl accDetailServ;
+    private final JwtUtils jwtUtils;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-	public SecurityConfig(AccountDetailServiceImpl accDetailServ, JwtUtils jwtUtils,
-			CorsConfigurationSource corsConfigurationSource) {
-		this.accDetailServ = accDetailServ;
-		this.jwtUtils = jwtUtils;
-		this.corsConfigurationSource = corsConfigurationSource;
-	}
+    public SecurityConfig(AccountDetailServiceImpl accDetailServ, JwtUtils jwtUtils,
+                          CorsConfigurationSource corsConfigurationSource) {
+        this.accDetailServ = accDetailServ;
+        this.jwtUtils = jwtUtils;
+        this.corsConfigurationSource = corsConfigurationSource;
+    }
 
-	@Bean
-	public JwtFilter jwtFilter() {
-		return new JwtFilter(jwtUtils, accDetailServ);
-	}
+    @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(jwtUtils, accDetailServ);
+    }
 
-	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(accDetailServ);
-		authProvider.setPasswordEncoder(passwordEncoder());
-		return authProvider;
-	}
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(accDetailServ);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
-	@Bean
-	public AuthenticationManager authManager(AuthenticationConfiguration configuration) throws Exception {
-		return configuration.getAuthenticationManager();
-	}
+    @Bean
+    public AuthenticationManager authManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+<<<<<<< Updated upstream
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -73,3 +76,26 @@ public class SecurityConfig {
 		return http.build();
 	}
 }
+=======
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource)) 
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/v1/auth/**", "/api/v1/common/otp/**").permitAll()
+                .requestMatchers("/api/v1/departments/**").permitAll()
+                .requestMatchers("/api/v1/notification/**").permitAll()
+                .requestMatchers("/api/v1/patient/**").permitAll()
+                .requestMatchers("/api/departments/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/").permitAll()
+                .anyRequest().authenticated()
+            )
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+}
+>>>>>>> Stashed changes
