@@ -31,7 +31,9 @@ public enum ErrorCode {
 	
 	
 	DEPARTMENT_NOT_FOUND("Chuyên khoa không tồn tại"), 
-	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"), ;
+	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"), 
+	
+	ADMIN_NOT_FOUND("Admin not found"), INVALID_IMAGE("Invalid Image"), FILE_TOO_LARGE("File too large"), ;
 	
 	private final String message;
 	
