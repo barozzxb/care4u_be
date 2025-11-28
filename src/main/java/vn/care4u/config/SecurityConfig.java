@@ -56,28 +56,21 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/common/otp/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/").permitAll()
-
-                        .requestMatchers("/api/v1/patient/**").permitAll()
-
-                        .requestMatchers("/api/v1/departments/**").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers("/api/v1/notification/**").permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/uploads/**").permitAll()
-
-                        .anyRequest().authenticated()
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/api/v1/auth/**","/api/v1/common/otp/**", "/api/v1/accounts/**").permitAll()
+						.requestMatchers("/api/v1/departments/**").hasAnyRole("ADMIN", "STAFF")
+						.requestMatchers("/api/v1/notification/**").permitAll()
+						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+						.requestMatchers("/uploads/**").permitAll()
+						.requestMatchers("/").permitAll()
+						.anyRequest().authenticated())
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 }

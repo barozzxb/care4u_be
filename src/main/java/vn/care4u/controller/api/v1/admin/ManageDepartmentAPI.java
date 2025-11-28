@@ -3,6 +3,7 @@ package vn.care4u.controller.api.v1.admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ import vn.care4u.service.DepartmentService;
 @RestController
 @RequestMapping("/api/v1/departments")
 @Tag(name = "Department", description = "Department API for Admin to manage")
-public class ManageAPI {
+public class ManageDepartmentAPI {
 
 	@Autowired
 	private DepartmentService depServ;
@@ -63,7 +64,7 @@ public class ManageAPI {
 				.build();
 	}
 	
-	@PutMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public ApiResponse<Void> delete(@PathVariable String id) {
 		depServ.deleteDepartment(id);
 		return ApiResponse.<Void>builder()
