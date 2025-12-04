@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.care4u.model.request.CreateAppointmentRequest;
+import vn.care4u.model.request.UpdateAppointmentRequest;
 import vn.care4u.model.request.UpdateAppointmentStatusRequest;
 import vn.care4u.service.DoctorUsecaseService;
 
@@ -41,5 +42,18 @@ public class AppointmentAPI {
         svc.manageAppointment(id, req.getAction());
         return ResponseEntity.ok(Map.of("message","Cập nhật thành công"));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        svc.deleteAppointment(id);
+        return ResponseEntity.ok(Map.of("message", "Thành công xóa cuộc hẹn"));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateAppointmentRequest req) {
+        svc.updateAppointment(id, req);
+        return ResponseEntity.ok(Map.of("message", "Updated successfully"));
+    }
+
 
 }

@@ -15,11 +15,14 @@ import vn.care4u.model.dto.DoctorProfileDTO;
 import vn.care4u.model.request.CreateAppointmentRequest;
 import vn.care4u.model.request.CreateMedicalRecordRequest;
 import vn.care4u.model.request.CreatePrescriptionRequest;
+import vn.care4u.model.request.UpdateAppointmentRequest;
 import vn.care4u.repository.*;
 import vn.care4u.service.CurrentUserService;
 import vn.care4u.service.DoctorUsecaseService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,6 +121,48 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         appointmentRepo.save(appt);
 
     }
+
+    @Override
+    public void deleteAppointment(Long id) {
+        var appt = appointmentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        Long doctorId = currentUser.currentDoctorId();
+
+        if (!appt.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("Bạn không có quyền xoá lịch này");
+        }
+
+        appointmentRepo.delete(appt);
+    }
+
+    @Override
+    public void updateAppointment(Long id, UpdateAppointmentRequest req) {
+        var appt = appointmentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        Long doctorId = currentUser.currentDoctorId();
+
+        if (!appt.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("Bạn không có quyền cập nhật lịch này");
+        }
+
+        if (req.getDate() != null)
+            appt.setDate(LocalDate.parse(req.getDate())); // nếu date là dạng "2025-12-06"
+
+        if (req.getTime() != null)
+            appt.setTime(LocalTime.parse(req.getTime())); // dạng "15:05"
+
+        if (req.getPlace() != null)
+            appt.setPlace(req.getPlace());
+
+        if (req.getNotes() != null)
+            appt.setNotes(req.getNotes());
+
+        appointmentRepo.save(appt);
+    }
+
+
 
     @Override
     public MedicalRecord createMedicalRecord(CreateMedicalRecordRequest req) {
