@@ -31,7 +31,7 @@ public enum ErrorCode {
 	
 	
 	DEPARTMENT_NOT_FOUND("Chuyên khoa không tồn tại"), 
-	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"),;
+	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"), NULL_INFORMATION(""),;
 
 
 	

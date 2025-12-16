@@ -56,7 +56,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-<<<<<<< Updated upstream
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -67,6 +66,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/patient/**").permitAll()
 						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll()
 						.anyRequest().authenticated())
@@ -75,25 +75,4 @@ public class SecurityConfig {
 		return http.build();
 	}
 }
-=======
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource)) // dùng CorsConfig
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/**", "/api/v1/common/otp/**").permitAll()
-                .requestMatchers("/api/v1/departments/**").permitAll()
-                .requestMatchers("/api/v1/notification/**").permitAll()
-                .requestMatchers("/api/v1/patient/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/").permitAll()
-                .anyRequest().authenticated()
-            )
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
-}
->>>>>>> Stashed changes
