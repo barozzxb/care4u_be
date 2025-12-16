@@ -18,6 +18,8 @@ import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
