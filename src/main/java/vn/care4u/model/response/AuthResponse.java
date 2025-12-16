@@ -11,7 +11,6 @@ import vn.care4u.model.dto.UserDetailDTO;
 public class AuthResponse {
 
 	private String token;
-	private String refreshToken;
 	private boolean status;
 	private String role;
 	private UserDetailDTO user;
