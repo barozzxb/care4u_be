@@ -53,15 +53,15 @@ public class AuthAPI {
 				.build();
 	}
 	
-	@Operation(summary = "Refresh Token", description = "Refresh access token using refresh token")
-	@PostMapping("/refresh-token")
-	public ApiResponse<String> refreshToken(@RequestBody String refreshToken) {
-		String newAccessToken = authServ.refreshToken(refreshToken);
-		return ApiResponse.<String>builder()
-				.status(200)
-				.message("Làm mới token thành công")
-				.body(newAccessToken)
-				.build();
-	}
+//	@Operation(summary = "Refresh Token", description = "Refresh access token using refresh token")
+//	@PostMapping("/refresh-token")
+//	public ApiResponse<String> refreshToken(@RequestBody String refreshToken) {
+//		String newAccessToken = authServ.refreshToken(refreshToken);
+//		return ApiResponse.<String>builder()
+//				.status(200)
+//				.message("Làm mới token thành công")
+//				.body(newAccessToken)
+//				.build();
+//	}
 	
 }

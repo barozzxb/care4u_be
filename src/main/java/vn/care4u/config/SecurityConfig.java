@@ -18,6 +18,8 @@ import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -66,10 +68,12 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/doctor/**").hasAuthority("ROLE_DOCTOR")
-                        .requestMatchers("/api/v1/doctor/medical-records/**").hasAuthority("ROLE_DOCTOR")
-                        .requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("ROLE_DOCTOR")
-                        .requestMatchers("/uploads/**").permitAll()
+            .requestMatchers("/api/v1/doctor/**").hasAuthority("ROLE_DOCTOR")
+            .requestMatchers("/api/v1/doctor/medical-records/**").hasAuthority("ROLE_DOCTOR")
+            .requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("ROLE_DOCTOR")
+            .requestMatchers("/uploads/**").permitAll()
+						.requestMatchers("/api/v1/patient/**").permitAll()
+						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll()
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider())
@@ -77,3 +81,4 @@ public class SecurityConfig {
 		return http.build();
 	}
 }
+
