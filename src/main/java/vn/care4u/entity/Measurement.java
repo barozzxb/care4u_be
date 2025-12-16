@@ -1,45 +1,45 @@
 package vn.care4u.entity;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "measurements")
-public class Measurement implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-
+@Table(name = "measurement")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Measurement {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(name="height", columnDefinition = "double")
-	private double height;
-	
-	@Column(name="weight", columnDefinition = "double")
-	private double weight;
-	
-	@Column(name="bmi", columnDefinition = "double")
-	private double bmi;
-	
-	@Column(name="healthStatus", columnDefinition = "nvarchar(255)")
-	private String healthStatus;
-	
-	@Column(name="timestamp", columnDefinition = "timestamp")
-	private Timestamp timestamp;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "patient_id")
+	private Patient patient;
+
+	// Link sinh hiệu này với phiếu khám nào
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "medical_record_id")
+	private MedicalRecord medicalRecord;
+
+	private LocalDateTime time;
+
+	// --- CHỈ SỐ ---
+	private Integer systolicBloodPressure;  // HA tâm thu
+	private Integer diastolicBloodPressure; // HA tâm trương
+	private Double temperature;
+	private Integer heartRate;
+	private Integer respiratoryRate;
+	private Double spo2;
+	private Double height;
+	private Double weight;
+	private Double bmi;
+
+	@PrePersist
+	public void prePersist() {
+		this.time = LocalDateTime.now();
+	}
 }

@@ -28,67 +28,96 @@ import vn.care4u.utils.JwtUtils;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-	private JwtUtils jwtUtils;
-	private final AccountDetailServiceImpl accDetailServ;
+    private final JwtUtils jwtUtils;
+    private final AccountDetailServiceImpl accDetailServ;
 
-	public JwtFilter(JwtUtils jwtUtils, AccountDetailServiceImpl accDetailServ) {
-		this.jwtUtils = jwtUtils;
-		this.accDetailServ = accDetailServ;
-	}
+    public JwtFilter(JwtUtils jwtUtils, AccountDetailServiceImpl accDetailServ) {
+        this.jwtUtils = jwtUtils;
+        this.accDetailServ = accDetailServ;
+    }
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-		String jwt = parseJwt(request);
-		if (jwt == null) {
-			filterChain.doFilter(request, response);
-			return;
-		}
-		try {
-			if (!jwtUtils.validateJwtToken(jwt)) {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-				return;
-			}
-			String username = jwtUtils.getUsernameFromJwtToken(jwt);
-			var userDetails = accDetailServ.loadUserByUsername(username);
+        String path = request.getServletPath();
+        System.out.println("JWT FILTER PATH = " + path);
 
-			Key key = Keys.hmacShaKeyFor(jwtUtils.getSecretKeyBytes());
-			Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+        // BYPASS những route không cần JWT
+        if (path.startsWith("/api/v1/auth")
+                || path.startsWith("/api/v1/common/otp")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/swagger-ui.html")
+                || path.startsWith("/uploads")
+                || path.equals("/")) {
 
-			String role = claims.get("role", String.class);
-			List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-			var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
-			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        String jwt = parseJwt(request);
 
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			filterChain.doFilter(request, response);
-		} catch (ExpiredJwtException ex) {
-			logger.info("JWT expired: " + ex.getMessage());
-			SecurityContextHolder.clearContext();
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
-			return;
-		} catch (JwtException ex) {
-			logger.warn("Invalid JWT: " + ex.getMessage());
-			SecurityContextHolder.clearContext();
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-			return;
-		} catch (Exception ex) {
-			logger.error("Authentication error: " + ex.getMessage(), ex);
-			SecurityContextHolder.clearContext();
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication error");
-			return;
-		}
+        if (jwt == null) {
+            // Không có token → cho qua nhưng không set authentication
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-	}
+        try {
+            if (!jwtUtils.validateJwtToken(jwt)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                return;
+            }
 
-	private String parseJwt(HttpServletRequest request) {
-		String headerAuth = request.getHeader("Authorization");
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-			return headerAuth.substring(7);
-		}
-		return null;
-	}
+            String username = jwtUtils.getUsernameFromJwtToken(jwt);
+            var userDetails = accDetailServ.loadUserByUsername(username);
 
+            Key key = Keys.hmacShaKeyFor(jwtUtils.getSecretKeyBytes());
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
+
+            String role = claims.get("role", String.class);
+            List<GrantedAuthority> authorities =
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, authorities);
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (ExpiredJwtException ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
+            return;
+
+        } catch (JwtException ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            return;
+
+        } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication error");
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7);
+        }
+        return null;
+    }
 }

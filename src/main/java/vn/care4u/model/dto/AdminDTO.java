@@ -1,6 +1,6 @@
 package vn.care4u.model.dto;
 
-import java.util.List;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class DoctorDTO {
-
+public class AdminDTO {
 	protected Long id;
-	
+
 	protected String firstname;
-	
+
 	protected String lastname;
 	
+	protected LocalDate dob;
+
 	protected String gender;
 
 	protected String address;
@@ -27,14 +28,5 @@ public class DoctorDTO {
 
 	protected String avatar;
 	
-	private String bio;
-
-	private String certification;
-
-	private String education;
-
-	private String experience;
-	
-	private String workinghour;
-	
+	protected String email;
 }

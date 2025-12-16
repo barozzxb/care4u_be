@@ -70,12 +70,21 @@ public class AccountServiceImpl implements AccountService {
 		accRepo.save(acc);
 	}
 
+	@Override
+	public void deActive(String id) {
+		Account acc = accRepo.findById(id).orElseThrow(() -> new GeneralException(ErrorCode.ACCOUNT_NOT_FOUND));
+		acc.setStatus(false);
+		accRepo.save(acc);
+	}	
+	
 //	For admin
 
 	@Override
-	public Page<Account> findAll(Pageable pageable) {
-		return accRepo.findAll(pageable);
+	public Page<AccountDTO> findAll(Pageable pageable) {
+		Page<Account> accounts =  accRepo.findAll(pageable);
+		return accounts.map(this::mapToDTO);
 	}
+	
 
 	@Override
 	public long count() {
