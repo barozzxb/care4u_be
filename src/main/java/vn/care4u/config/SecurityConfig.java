@@ -68,6 +68,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/patient/**").permitAll()
 						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll()
 						.anyRequest().authenticated())
@@ -76,3 +77,4 @@ public class SecurityConfig {
 		return http.build();
 	}
 }
+
