@@ -55,7 +55,7 @@ public class PatientController {
             log.info("✅ Tìm thấy bệnh nhân - ID: {}", patient.getId());
             
             response.put("success", true);
-            response.put("data", patientData);  // ⭐ Trả về Map thay vì Entity
+            response.put("data", patientData);  
             response.put("message", "Lấy thông tin thành công");
             
             return ResponseEntity.ok()

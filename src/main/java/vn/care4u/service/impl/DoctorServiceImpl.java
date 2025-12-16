@@ -1,8 +1,14 @@
 package vn.care4u.service.impl;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import vn.care4u.entity.Doctor;
+import lombok.RequiredArgsConstructor;
 
 import vn.care4u.entity.Doctor;
 import vn.care4u.model.dto.AppointmentDTO;
@@ -98,5 +104,10 @@ public class DoctorServiceImpl implements DoctorService {
 				.phonenum(doctor.getPhonenum())
 				.avatar(doctor.getAvatar())
 				.build();
+
+	@Override
+	public List<DoctorDTO> mapToDTOList(List<Doctor> doctors) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

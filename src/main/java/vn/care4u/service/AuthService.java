@@ -15,8 +15,8 @@ public interface AuthService {
 	 * Input email and password to login
 	 */
 	AuthResponse login(LoginRequest request);
-
-	String refreshToken(String refreshToken);
+//
+//	String refreshToken(String refreshToken);
 
 	void logout(String email);
 
