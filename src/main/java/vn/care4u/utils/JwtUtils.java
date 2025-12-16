@@ -9,22 +9,38 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import vn.care4u.enumeration.ERole;
 
 @Component
+@Slf4j
 public class JwtUtils {
 
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 
 	@Value("${jwt.expiration.ms}")
-	private int jwtExpirationMs;
+	private long jwtExpirationMs;
+	
+	@Value("${jwt.refresh.expiration.ms}")
+	private long jwtRefreshExpirationMs;
 
 	public String generateToken(String username, ERole role) {
 		Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 		return Jwts.builder()
 				.setSubject(username)
 				.claim("role", role.name())
+				.setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+				.signWith(key, SignatureAlgorithm.HS512)
+				.compact();
+	}
+	
+	public String generateRefreshToken(String username) {
+		Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+		log.info("Generating refresh token for user: " + username);
+		return Jwts.builder()
+				.setSubject(username)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
 				.signWith(key, SignatureAlgorithm.HS512)
@@ -59,5 +75,12 @@ public class JwtUtils {
 
 	public byte[] getSecretKeyBytes() {
 		return jwtSecret.getBytes(StandardCharsets.UTF_8);
+	}
+	
+	public long getJwtExpirationMs() {
+		return jwtExpirationMs;
+	}
+	public long getJwtRefreshExpirationMs() {
+		return jwtRefreshExpirationMs;
 	}
 }

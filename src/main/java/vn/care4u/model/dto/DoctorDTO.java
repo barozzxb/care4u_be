@@ -13,24 +13,28 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DoctorDTO {
 
-    private Long id;
+	protected Long id;
+	
+	protected String firstname;
+	
+	protected String lastname;
+	
+	protected String gender;
 
-    private String firstname;
+	protected String address;
 
-    private String lastname;
+	protected String phonenum;
 
-    private String bio;
+	protected String avatar;
+	
+	private String bio;
 
-    private String education;       
-    
-    private String certification;   
+	private String certification;
 
-    private String experience;
+	private String education;
 
-    private String workinghour;     
-
-    private Integer patients;     
-
-    private Double rating;        
-
+	private String experience;
+	
+	private String workinghour;
+	
 }

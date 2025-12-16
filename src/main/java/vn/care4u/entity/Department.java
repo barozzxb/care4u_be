@@ -1,47 +1,52 @@
 package vn.care4u.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
 
-<<<<<<< Updated upstream
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-=======
 import jakarta.persistence.*;
 import lombok.*;
->>>>>>> Stashed changes
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-<<<<<<< Updated upstream
-
-=======
 @Builder
->>>>>>> Stashed changes
 @Entity
 @Table(name = "department")
-public class Department implements Serializable {
+public class Department implements Serializable{
 
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name = "id", length = 36)
+	private String id; //Id is a combination of the first letter of each word in the department name and a random 4-digit number. For example, "Human Resources" could be "HR1234"
+	
+	@Column(name = "name", columnDefinition = "nvarchar(100)")
+	private String name;
+	
+	@Column(name = "description", columnDefinition = "nvarchar(255)")
+	private String description;
+	
+	@Column(name = "createdAt", columnDefinition = "timestamp")
+	private Timestamp createdAt;
 
-<<<<<<< Updated upstream
-=======
-    @Id
-    @Column(name = "id", length = 36)
-    private String id;
-
-    @Column(name = "name", columnDefinition = "nvarchar(100)")
-    private String name;
-
-    @Column(name = "description", columnDefinition = "nvarchar(255)")
-    private String description;
-
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Doctor> doctors;
->>>>>>> Stashed changes
+	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Doctor> doctors;
+	
+	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Staff> staffs;
 }

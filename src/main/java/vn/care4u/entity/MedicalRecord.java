@@ -1,45 +1,59 @@
 package vn.care4u.entity;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medicalrecord")
-public class MedicalRecord implements Serializable{
-
-	/**
-	 * 
-	 */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MedicalRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(name = "createdat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-	private Timestamp createdAt;
-	
-	@Column(name = "diagnosis", columnDefinition = "nvarchar(255)")
-	private String diagnosis;
-	
-	@Column(name = "treatment", columnDefinition = "nvarchar(255)")
-	private String treatment;
-	
-	@Column(name = "notes", columnDefinition = "nvarchar(255)")
-	private String notes;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "doctor_id")
+	private Doctor doctor;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "patient_id")
+	private Patient patient;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+
+	// --- CÁC TRƯỜNG DỮ LIỆU ---
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String symptoms;     // Triệu chứng
+
+	@Column(name = "physical_exam", columnDefinition = "nvarchar(MAX)")
+	private String physicalExam; // Khám thực thể (Mới)
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String diagnosis;    // Chẩn đoán
+
+	@Column(name = "conclusion", columnDefinition = "nvarchar(MAX)")
+	private String conclusion;   // Kết luận lâm sàng (Mới)
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String treatment;    // Phác đồ điều trị
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String advice;       // Lời dặn (Mới)
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String notes;        // Ghi chú
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = LocalDateTime.now();
+	}
 }

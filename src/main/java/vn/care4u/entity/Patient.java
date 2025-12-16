@@ -1,20 +1,6 @@
 package vn.care4u.entity;
 
-<<<<<<< Updated upstream
 import jakarta.persistence.Column;
-
-public class Patient extends User {
-
-	private static final long serialVersionUID = 1L;
-
-	@Column(name="insurance", columnDefinition = "nvarchar(255)")
-	String insurance;
-	
-	@Column(name="ralativePhone", columnDefinition = "nvarchar(255)")
-	String ralativePhone;
-
-}
-=======
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
@@ -78,5 +64,5 @@ public class Patient extends User {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore  // ⭐ QUAN TRỌNG: Ngăn circular reference
     private List<Prediction> predictions = new ArrayList<>();
+
 }
->>>>>>> Stashed changes

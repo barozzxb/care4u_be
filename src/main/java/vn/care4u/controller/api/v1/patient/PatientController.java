@@ -24,6 +24,7 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
     
+    // Lấy thông tin bệnh nhân theo email
     @GetMapping
     public ResponseEntity<Map<String, Object>> getPatientInfo(@RequestParam String email) {
         Map<String, Object> response = new HashMap<>();
@@ -32,6 +33,7 @@ public class PatientController {
             
             Patient patient = patientService.getPatientById(email);
             
+            // ⭐ Tạo Map chỉ chứa thông tin cần thiết (không có account, predictions)
             Map<String, Object> patientData = new HashMap<>();
             patientData.put("id", patient.getId());
             patientData.put("firstname", patient.getFirstname());
@@ -72,6 +74,7 @@ public class PatientController {
         }
     }
     
+    // Cập nhật thông tin bệnh nhân theo email
     @PutMapping("/update")
     public ResponseEntity<Map<String, Object>> updatePatientInfo(
             @RequestParam String email,
