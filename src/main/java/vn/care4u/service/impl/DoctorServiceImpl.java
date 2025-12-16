@@ -61,4 +61,10 @@ public class DoctorServiceImpl implements DoctorService{
 				.workinghour(doctor.getWorkinghour())
 				.build();
 	}
+
+	@Override
+	public List<DoctorDTO> mapToDTOList(List<Doctor> doctors) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

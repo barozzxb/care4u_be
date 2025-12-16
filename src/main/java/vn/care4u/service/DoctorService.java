@@ -8,18 +8,16 @@ import java.util.List;
 
 public interface DoctorService {
 
-    boolean existsById(Long id);
+	boolean existsById(Long id);
 
-    <S extends Doctor> S save(S entity);
+	<S extends Doctor> S save(S entity);
 
-    DoctorDTO mapToDTO(Doctor doctor);
+	DoctorDTO mapToDTO(Doctor doctor);
 
-    List<DoctorDTO> mapToDTOList(List<Doctor> doctors);
-	  List<AppointmentDTO> getAppointment(Long doctorId, String q);
+	List<DoctorDTO> mapToDTOList(List<Doctor> doctors);
 
-	  void updateAppointmentStatus(Long doctorId, Long apptId, String status);
+	List<AppointmentDTO> getAppointment(Long doctorId, String q);
 
-	  Doctor save(Doctor entity);
-	  boolean existsById(Long id);
+	void updateAppointmentStatus(Long doctorId, Long apptId, String status);
 
 }
