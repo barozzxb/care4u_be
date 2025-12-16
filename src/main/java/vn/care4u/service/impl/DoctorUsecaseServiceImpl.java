@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.care4u.entity.Appointment;
+import vn.care4u.entity.Measurement;
 import vn.care4u.entity.MedicalRecord;
 import vn.care4u.entity.Prescription;
 import vn.care4u.enumeration.EStatus;
@@ -14,11 +15,14 @@ import vn.care4u.model.dto.DoctorProfileDTO;
 import vn.care4u.model.request.CreateAppointmentRequest;
 import vn.care4u.model.request.CreateMedicalRecordRequest;
 import vn.care4u.model.request.CreatePrescriptionRequest;
+import vn.care4u.model.request.UpdateAppointmentRequest;
 import vn.care4u.repository.*;
 import vn.care4u.service.CurrentUserService;
 import vn.care4u.service.DoctorUsecaseService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +39,8 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     private final DoctorRepository doctorRepo;
     private final PatientRepository patientRepo;
 //    private final DrugRepository drugRepo;
+
+    private final MeasurementRepository measurementRepo;
 
     @Override
     public List<AppointmentDTO> listAppointments(String q) {
@@ -117,6 +123,48 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     }
 
     @Override
+    public void deleteAppointment(Long id) {
+        var appt = appointmentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        Long doctorId = currentUser.currentDoctorId();
+
+        if (!appt.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("Bạn không có quyền xoá lịch này");
+        }
+
+        appointmentRepo.delete(appt);
+    }
+
+    @Override
+    public void updateAppointment(Long id, UpdateAppointmentRequest req) {
+        var appt = appointmentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        Long doctorId = currentUser.currentDoctorId();
+
+        if (!appt.getDoctor().getId().equals(doctorId)) {
+            throw new RuntimeException("Bạn không có quyền cập nhật lịch này");
+        }
+
+        if (req.getDate() != null)
+            appt.setDate(LocalDate.parse(req.getDate())); // nếu date là dạng "2025-12-06"
+
+        if (req.getTime() != null)
+            appt.setTime(LocalTime.parse(req.getTime())); // dạng "15:05"
+
+        if (req.getPlace() != null)
+            appt.setPlace(req.getPlace());
+
+        if (req.getNotes() != null)
+            appt.setNotes(req.getNotes());
+
+        appointmentRepo.save(appt);
+    }
+
+
+
+    @Override
     public MedicalRecord createMedicalRecord(CreateMedicalRecordRequest req) {
         Long doctorId = currentUser.currentDoctorId();
 
@@ -125,14 +173,49 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         var patient = patientRepo.findById(req.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
+        // 1. TẠO & LƯU PHIẾU KHÁM (MEDICAL RECORD)
         var r = new MedicalRecord();
         r.setDoctor(doctor);
         r.setPatient(patient);
-        r.setDiagnosis(req.getDiagnosis());
+
+        // Map các trường Text
         r.setSymptoms(req.getSymptoms());
+        r.setPhysicalExam(req.getPhysicalExam()); // Mới
+        r.setDiagnosis(req.getDiagnosis());
+        r.setConclusion(req.getConclusion());     // Mới
+        r.setTreatment(req.getTreatment());
+        r.setAdvice(req.getAdvice());             // Mới
         r.setNotes(req.getNotes());
-        try { r.getClass().getMethod("setCreatedAt", LocalDateTime.class); r.setCreatedAt(LocalDateTime.now()); } catch (Exception ignore) {}
-        return recordRepo.save(r);
+
+        // Lưu xuống DB trước để có ID
+        r = recordRepo.save(r);
+
+        // 2. TẠO & LƯU SINH HIỆU (MEASUREMENT) - NẾU CÓ DỮ LIỆU
+        // Kiểm tra sơ bộ xem có nhập sinh hiệu không để tránh lưu rác
+        if (hasMeasurementData(req)) {
+            var m = new Measurement();
+            m.setPatient(patient);
+            m.setMedicalRecord(r); // Link vào phiếu khám vừa tạo
+
+            m.setSystolicBloodPressure(req.getSystolicBP());
+            m.setDiastolicBloodPressure(req.getDiastolicBP());
+            m.setTemperature(req.getTemperature());
+            m.setHeartRate(req.getHeartRate());
+            m.setRespiratoryRate(req.getRespiratoryRate());
+            m.setSpo2(req.getSpo2());
+            m.setHeight(req.getHeight());
+            m.setWeight(req.getWeight());
+            m.setBmi(req.getBmi());
+
+            measurementRepo.save(m);
+        }
+
+        return r;
+    }
+
+    private boolean hasMeasurementData(CreateMedicalRecordRequest req) {
+        return req.getHeight() != null || req.getWeight() != null
+                || req.getTemperature() != null || req.getSystolicBP() != null;
     }
 
     @Override

@@ -75,8 +75,9 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
-			<optional>true</optional>
+			<version>1.18.32</version>
+			<scope>provided</scope>
+
 		</dependency>
 
 		<dependency>
@@ -150,6 +151,7 @@
 						<exclude>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.32</version>
 						</exclude>
 					</excludes>
 				</configuration>
