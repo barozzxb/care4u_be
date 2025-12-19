@@ -46,7 +46,5 @@ public class Department implements Serializable{
 
 	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Doctor> doctors;
-	
-	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Staff> staffs;
+
 }

@@ -26,7 +26,9 @@ public enum ErrorCode {
 
 	ADMIN_NOT_FOUND("Admin not found"), INVALID_IMAGE("Invalid Image"), FILE_TOO_LARGE("File too large"),
 
-	NULL_INFORMATION("Không có thông tin");
+	NULL_INFORMATION("Không có thông tin"), 
+	
+	POST_NOT_FOUND("Không tìm thấy bài viết");
 
 	private final String message;
 
