@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.care4u.enumeration.MedicalRecordStatus;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -32,18 +34,17 @@ public class MedicalRecord implements Serializable {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	// --- CÁC TRƯỜNG DỮ LIỆU ---
 	@Column(columnDefinition = "nvarchar(MAX)")
 	private String symptoms;     // Triệu chứng
 
 	@Column(name = "physical_exam", columnDefinition = "nvarchar(MAX)")
-	private String physicalExam; // Khám thực thể (Mới)
+	private String physicalExam; // Khám thực thể
 
 	@Column(columnDefinition = "nvarchar(MAX)")
 	private String diagnosis;    // Chẩn đoán
 
 	@Column(name = "conclusion", columnDefinition = "nvarchar(MAX)")
-	private String conclusion;   // Kết luận lâm sàng (Mới)
+	private String conclusion;   // Kết luận lâm sàng
 
 	@Column(columnDefinition = "nvarchar(MAX)")
 	private String treatment;    // Phác đồ điều trị
@@ -81,9 +82,13 @@ public class MedicalRecord implements Serializable {
 	@Column(name = "bmi")
 	private Double bmi;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", length = 20)
+	private MedicalRecordStatus status;
 
 	@PrePersist
 	public void prePersist() {
 		this.createdAt = LocalDateTime.now();
+		this.status = MedicalRecordStatus.PENDING;
 	}
 }

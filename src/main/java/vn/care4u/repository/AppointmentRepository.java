@@ -4,13 +4,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import vn.care4u.entity.Appointment;
+import vn.care4u.enumeration.EStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    List<Appointment> findByDoctorIdOrderByTimeAsc(Long doctorId);
+    List<Appointment> findByDoctorIdOrderByDateAscTimeAsc(Long doctorId);
+
+    Optional<Appointment> findByIdAndDoctorId(Long id, Long doctorId);
 
     @Query("""
     select a from Appointment a
@@ -22,5 +26,31 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
   """)
     List<Appointment> search(@Param("doctorId") Long doctorId, @Param("q") String q);
 
-    Optional<Appointment> findByIdAndDoctorId(Long id, Long doctorId);
+
+    @Query("""
+        SELECT COUNT(a)
+        FROM Appointment a
+        WHERE a.doctor.id = :doctorId
+          AND a.date >= :today
+          AND a.status = :status
+    """)
+    long countUpcomingByDoctor(
+            @Param("doctorId") Long doctorId,
+            @Param("today") LocalDate today,
+            @Param("status") EStatus status
+    );
+    @Query("""
+    SELECT a
+    FROM Appointment a
+    WHERE a.doctor.id = :doctorId
+      AND a.date = :today
+      AND a.status = :status
+    ORDER BY a.time ASC
+""")
+    List<Appointment> findTodayAppointments(
+            @Param("doctorId") Long doctorId,
+            @Param("today") LocalDate today,
+            @Param("status") EStatus status
+    );
+
 }
