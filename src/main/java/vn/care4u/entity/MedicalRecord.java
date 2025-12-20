@@ -34,25 +34,25 @@ public class MedicalRecord implements Serializable {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	@Column(columnDefinition = "nvarchar(MAX)")
+	@Column(columnDefinition = "nvarchar(3000)")
 	private String symptoms;     // Triệu chứng
 
-	@Column(name = "physical_exam", columnDefinition = "nvarchar(MAX)")
-	private String physicalExam; // Khám thực thể
+	@Column(name = "physical_exam", columnDefinition = "nvarchar(3000)")
+	private String physicalExam; // Khám thực thể 
 
-	@Column(columnDefinition = "nvarchar(MAX)")
+	@Column(columnDefinition = "nvarchar(3000)")
 	private String diagnosis;    // Chẩn đoán
 
-	@Column(name = "conclusion", columnDefinition = "nvarchar(MAX)")
-	private String conclusion;   // Kết luận lâm sàng
+	@Column(name = "conclusion", columnDefinition = "nvarchar(3000)")
+	private String conclusion;   // Kết luận lâm sàng 
 
-	@Column(columnDefinition = "nvarchar(MAX)")
+	@Column(columnDefinition = "nvarchar(3000)")
 	private String treatment;    // Phác đồ điều trị
 
-	@Column(columnDefinition = "nvarchar(MAX)")
+	@Column(columnDefinition = "nvarchar(3000)")
 	private String advice;       // Lời dặn (Mới)
 
-	@Column(columnDefinition = "nvarchar(MAX)")
+	@Column(columnDefinition = "nvarchar(3000)")
 	private String notes;        // Ghi chú
 
 	@Column(name = "systolic_bp")

@@ -1,5 +1,6 @@
 package vn.care4u.entity;
 
+import jakarta.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
@@ -62,4 +63,5 @@ public class Patient extends User {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore  // ⭐ QUAN TRỌNG: Ngăn circular reference
     private List<Prediction> predictions = new ArrayList<>();
+
 }
