@@ -45,7 +45,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         System.out.println("JWT FILTER PATH = " + path);
 
-        // BYPASS những route không cần JWT
         if (path.startsWith("/api/v1/auth")
                 || path.startsWith("/api/v1/common/otp")
                 || path.startsWith("/v3/api-docs")
@@ -61,7 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = parseJwt(request);
 
         if (jwt == null) {
-            // Không có token → cho qua nhưng không set authentication
             filterChain.doFilter(request, response);
             return;
         }

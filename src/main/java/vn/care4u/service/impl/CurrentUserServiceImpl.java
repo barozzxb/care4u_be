@@ -21,7 +21,7 @@ public class CurrentUserServiceImpl implements CurrentUserService {
     public String currentEmail() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getName() == null) throw new GeneralException(ErrorCode.UNAUTHORIZED);
-        return auth.getName(); // JwtFilter đã set name = email
+        return auth.getName();
     }
 
     @Override

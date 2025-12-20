@@ -68,8 +68,6 @@ public class DoctorServiceImpl implements DoctorService {
 		return mapToProfileDTO(doctorRepo.save(doctor));
 	}
 
-	/* ===================== MAPPERS ===================== */
-
 	private DoctorProfileDTO mapToProfileDTO(Doctor doctor) {
 		return DoctorProfileDTO.builder()
 				.id(doctor.getId())
