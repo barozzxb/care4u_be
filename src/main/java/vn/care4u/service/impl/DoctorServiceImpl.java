@@ -3,23 +3,18 @@ package vn.care4u.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import vn.care4u.entity.Doctor;
 import lombok.RequiredArgsConstructor;
-
 import vn.care4u.entity.Doctor;
 import vn.care4u.model.dto.AppointmentDTO;
 import vn.care4u.model.dto.DoctorDTO;
 import vn.care4u.model.dto.DoctorProfileDTO;
 import vn.care4u.model.request.UpdateDoctorProfileRequest;
 import vn.care4u.repository.DoctorRepository;
-import vn.care4u.service.DoctorService;
 import vn.care4u.service.CurrentUserService;
-
-import java.util.List;
+import vn.care4u.service.DoctorService;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +69,26 @@ public class DoctorServiceImpl implements DoctorService {
 		return mapToProfileDTO(doctorRepo.save(doctor));
 	}
 
+	@Override
+	public DoctorDTO mapToDTO(Doctor doctor) {
+		return DoctorDTO.builder()
+				.id(doctor.getId())
+				.firstname(doctor.getFirstname())
+				.lastname(doctor.getLastname())
+				.gender(doctor.getGender())
+				.address(doctor.getAddress())
+				.phonenum(doctor.getPhonenum())
+				.avatar(doctor.getAvatar())
+				.build();
+	}
+
+	@Override
+	public List<DoctorDTO> mapToDTOList(List<Doctor> doctors) {
+		return doctors.stream()
+				.map(this::mapToDTO)
+				.collect(Collectors.toList());
+	}
+
 	private DoctorProfileDTO mapToProfileDTO(Doctor doctor) {
 		return DoctorProfileDTO.builder()
 				.id(doctor.getId())
@@ -90,22 +105,5 @@ public class DoctorServiceImpl implements DoctorService {
 				.experience(doctor.getExperience())
 				.workinghour(doctor.getWorkinghour())
 				.build();
-	}
-
-	public DoctorDTO mapToDTO(Doctor doctor) {
-		return DoctorDTO.builder()
-				.id(doctor.getId())
-				.firstname(doctor.getFirstname())
-				.lastname(doctor.getLastname())
-				.gender(doctor.getGender())
-				.address(doctor.getAddress())
-				.phonenum(doctor.getPhonenum())
-				.avatar(doctor.getAvatar())
-				.build();
-
-	@Override
-	public List<DoctorDTO> mapToDTOList(List<Doctor> doctors) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

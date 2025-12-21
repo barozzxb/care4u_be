@@ -12,7 +12,7 @@ public interface DoctorService {
 
 	boolean existsById(Long id);
 
-	<S extends Doctor> S save(S entity);
+	Doctor save(Doctor entity);
 
 	DoctorDTO mapToDTO(Doctor doctor);
 
@@ -22,10 +22,8 @@ public interface DoctorService {
 
 	void updateAppointmentStatus(Long doctorId, Long apptId, String status);
 
-	Doctor save(Doctor entity);
-	boolean existsById(Long id);
-
 	DoctorProfileDTO getMyProfile();
-	DoctorProfileDTO updateMyProfile(UpdateDoctorProfileRequest req);
 
+	DoctorProfileDTO updateMyProfile(UpdateDoctorProfileRequest req);
 }
+
