@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DepartmentDTO {
 
-	private String id;
-	private String name;
-	private String description;
-	private List<DoctorDTO> doctors;
-	
+    private String id;
+    private String name;
+    private String description;
+    private String icon; 
+    private List<DoctorDTO> doctors;
 }

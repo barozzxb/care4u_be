@@ -4,27 +4,18 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-
 @Entity
 @Table(name = "department")
-public class Department implements Serializable{
+public class Department implements Serializable {
 
+<<<<<<< Updated upstream
 	/**
 	 * 
 	 */
@@ -42,10 +33,23 @@ public class Department implements Serializable{
 	
 	@Column(name = "createdAt", columnDefinition = "timestamp")
 	private Timestamp createdAt;
+=======
+    private static final long serialVersionUID = 1L;
+>>>>>>> Stashed changes
 
-	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Doctor> doctors;
-	
-	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Staff> staffs;
+    @Id
+    @Column(name = "id", length = 36)
+    private String id;
+
+    @Column(name = "name", columnDefinition = "nvarchar(100)")
+    private String name;
+
+    @Column(name = "description", columnDefinition = "nvarchar(255)")
+    private String description;
+
+    @Column(name = "icon", length = 50)
+    private String icon;
+
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Doctor> doctors;
 }

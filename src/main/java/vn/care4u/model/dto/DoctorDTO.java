@@ -1,5 +1,7 @@
 package vn.care4u.model.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,28 +13,24 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DoctorDTO {
 
-	protected Long id;
-	
-	protected String firstname;
-	
-	protected String lastname;
-	
-	protected String gender;
+    private Long id;
 
-	protected String address;
+    private String firstname;
 
-	protected String phonenum;
+    private String lastname;
 
-	protected String avatar;
-	
-	private String bio;
+    private String bio;
 
-	private String certification;
+    private String education;       
+    
+    private String certification;   
 
-	private String education;
+    private String experience;
 
-	private String experience;
-	
-	private String workinghour;
-	
+    private String workinghour;     
+
+    private Integer patients;     
+
+    private Double rating;        
+
 }

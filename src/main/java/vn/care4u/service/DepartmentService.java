@@ -6,14 +6,13 @@ import vn.care4u.model.dto.DepartmentDTO;
 
 public interface DepartmentService {
 
-	void deleteDepartment(String id);
+    void deleteDepartment(String id);
 
-	void editDepartment(DepartmentDTO dto);
+    void editDepartment(DepartmentDTO dto);
 
-	void createDepartment(DepartmentDTO departmentDTO);
+    void createDepartment(DepartmentDTO departmentDTO);
 
-	DepartmentDTO getDepartmentById(String id);
+    DepartmentDTO getDepartmentById(String id);
 
-	List<DepartmentDTO> getAllDepartments();
-
+    List<DepartmentDTO> getAllDepartments();
 }

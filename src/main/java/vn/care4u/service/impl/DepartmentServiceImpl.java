@@ -14,10 +14,10 @@ import vn.care4u.model.dto.DepartmentDTO;
 import vn.care4u.repository.DepartmentRepository;
 import vn.care4u.service.DepartmentService;
 
-
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
+<<<<<<< Updated upstream
 	@Autowired
 	DepartmentRepository departmentRepo;
 	
@@ -85,4 +85,79 @@ public class DepartmentServiceImpl implements DepartmentService {
 				.doctors(department.getDoctors().stream().map(doctorServ::mapToDTO).collect(Collectors.toList()))
 				.build();
 	}
+=======
+    @Autowired
+    private DepartmentRepository departmentRepo;
+
+    @Autowired
+    private DoctorServiceImpl doctorServ;
+
+    @Override
+    public List<DepartmentDTO> getAllDepartments() {
+        return departmentRepo.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public DepartmentDTO getDepartmentById(String id) {
+        Department department = departmentRepo.findById(id)
+                .orElseThrow(() -> new GeneralException(ErrorCode.DEPARTMENT_NOT_FOUND));
+        return mapToDTO(department);
+    }
+
+    @Override
+    public void createDepartment(DepartmentDTO dto) {
+        if (departmentRepo.existsById(dto.getId())) {
+            throw new GeneralException(ErrorCode.DEPARTMENT_ALREADY_EXISTS);
+        }
+
+        Department department = Department.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .icon(dto.getIcon()) 
+                .build();
+
+        departmentRepo.save(department);
+    }
+
+    @Override
+    public void editDepartment(DepartmentDTO dto) {
+        Department department = departmentRepo.findById(dto.getId())
+                .orElseThrow(() -> new GeneralException(ErrorCode.DEPARTMENT_NOT_FOUND));
+
+        department.setName(dto.getName());
+        department.setDescription(dto.getDescription());
+        department.setIcon(dto.getIcon()); 
+
+        departmentRepo.save(department);
+    }
+
+    @Override
+    public void deleteDepartment(String id) {
+        Department department = departmentRepo.findById(id)
+                .orElseThrow(() -> new GeneralException(ErrorCode.DEPARTMENT_NOT_FOUND));
+        department.setDescription("Chuyên khoa tạm khóa");
+        departmentRepo.save(department);
+    }
+
+    private DepartmentDTO mapToDTO(Department department) {
+        return DepartmentDTO.builder()
+                .id(department.getId())
+                .name(department.getName())
+                .description(department.getDescription())
+                .icon(department.getIcon())
+                .doctors(
+                    department.getDoctors() == null
+                        ? List.of()
+                        : department.getDoctors()
+                            .stream()
+                            .map(doctorServ::mapToDTO)
+                            .collect(Collectors.toList())
+                )
+                .build();
+    }
+>>>>>>> Stashed changes
 }

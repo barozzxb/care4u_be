@@ -28,6 +28,7 @@ import vn.care4u.utils.JwtUtils;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
+<<<<<<< Updated upstream
 	private JwtUtils jwtUtils;
 	private final AccountDetailServiceImpl accDetailServ;
 
@@ -92,3 +93,74 @@ public class JwtFilter extends OncePerRequestFilter {
 	}
 
 }
+=======
+    private final JwtUtils jwtUtils;
+    private final AccountDetailServiceImpl accDetailServ;
+
+    public JwtFilter(JwtUtils jwtUtils, AccountDetailServiceImpl accDetailServ) {
+        this.jwtUtils = jwtUtils;
+        this.accDetailServ = accDetailServ;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        if (path.startsWith("/api/v1/auth/") ||
+            path.startsWith("/api/v1/common/otp/") ||
+            path.startsWith("/api/v1/departments/") ||
+            path.startsWith("/api/departments/") ||
+            path.startsWith("/api/doctors/") ||
+            path.startsWith("/uploads/") ||
+            path.startsWith("/v3/api-docs/") ||
+            path.startsWith("/swagger-ui") ||
+            path.equals("/") ||
+            "OPTIONS".equalsIgnoreCase(method)) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            String jwt = parseJwt(request);
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                String username = jwtUtils.getUsernameFromJwtToken(jwt);
+                var userDetails = accDetailServ.loadUserByUsername(username);
+
+                Key key = Keys.hmacShaKeyFor(jwtUtils.getSecretKeyBytes());
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(key)
+                        .build()
+                        .parseClaimsJws(jwt)
+                        .getBody();
+
+                String role = claims.get("role", String.class);
+                List<GrantedAuthority> authorities = List.of(
+                        new SimpleGrantedAuthority("ROLE_" + role)
+                );
+
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, authorities);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể thiết lập xác thực người dùng: " + e.getMessage());
+        }
+
+        filterChain.doFilter(request, response);
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7);
+        }
+        return null;
+    }
+}
+>>>>>>> Stashed changes
