@@ -3,8 +3,9 @@ package vn.care4u.controller.api.v1.patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import vn.care4u.model.dto.PatientUpdateDTO;
+import org.springframework.web.multipart.MultipartFile;
 import vn.care4u.entity.Patient;
+import vn.care4u.model.dto.PatientUpdateDTO;
 import vn.care4u.service.PatientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,59 +52,104 @@ public class PatientController {
             patientData.put("ethnic", patient.getEthnic());
             patientData.put("referralCode", patient.getReferralCode());
             patientData.put("avatar", patient.getAvatar());
-            
-            log.info("✅ Tìm thấy bệnh nhân - ID: {}", patient.getId());
-            
+
             response.put("success", true);
-            response.put("data", patientData);  
+            response.put("data", patientData);
             response.put("message", "Lấy thông tin thành công");
-            
+
             return ResponseEntity.ok()
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .body(response);
-                    
+
         } catch (Exception e) {
-            log.error("❌ Lỗi khi lấy thông tin bệnh nhân: ", e);
             response.put("success", false);
             response.put("message", "Không tìm thấy bệnh nhân: " + e.getMessage());
             response.put("data", null);
-            
+
             return ResponseEntity.status(404)
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .body(response);
         }
     }
-    
-    // Cập nhật thông tin bệnh nhân theo email
-    @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updatePatientInfo(
+
+    @PutMapping(value = "/update", consumes = "application/json")
+    public ResponseEntity<Map<String, Object>> updatePatientInfoJson(
             @RequestParam String email,
-            @RequestBody PatientUpdateDTO dto) {
-        
+            @RequestBody PatientUpdateDTO dto
+    ) {
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
-            log.info("🌐 PUT request - Email: {}", email);
-            log.info("📥 Request Body: {}", dto);
-            
-            Patient updatedPatient = patientService.updatePatientInfo(email, dto);
-            
+            patientService.updatePatientInfo(email, dto);
+
             response.put("success", true);
             response.put("message", "Cập nhật thông tin thành công!");
-            response.put("data", null);
-            
-            log.info("✅ Cập nhật thành công - Patient ID: {}", updatedPatient.getId());
-            
+            response.put("avatarUrl", null);
+
             return ResponseEntity.ok()
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .body(response);
-                    
+
         } catch (Exception e) {
-            log.error("❌ Lỗi khi cập nhật bệnh nhân: ", e);
             response.put("success", false);
             response.put("message", "Cập nhật thất bại: " + e.getMessage());
-            response.put("data", null);
-            
+
+            return ResponseEntity.status(400)
+                    .header("Content-Type", "application/json; charset=UTF-8")
+                    .body(response);
+        }
+    }
+
+    @PutMapping(value = "/update", consumes = "multipart/form-data")
+    public ResponseEntity<Map<String, Object>> updatePatientInfoWithAvatar(
+            @RequestParam String email,
+            @RequestPart(required = false) MultipartFile avatar,
+            @RequestPart(required = false) String firstname,
+            @RequestPart(required = false) String lastname,
+            @RequestPart(required = false) String phonenum,
+            @RequestPart(required = false) String dob,
+            @RequestPart(required = false) String idNumber,
+            @RequestPart(required = false) String gender,
+            @RequestPart(required = false) String insurance,
+            @RequestPart(required = false) String province,
+            @RequestPart(required = false) String district,
+            @RequestPart(required = false) String ward,
+            @RequestPart(required = false) String ethnic,
+            @RequestPart(required = false) String referralCode
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            PatientUpdateDTO dto = new PatientUpdateDTO();
+            dto.setFirstname(firstname);
+            dto.setLastname(lastname);
+            dto.setPhonenum(phonenum);
+            dto.setDob(dob);
+            dto.setIdNumber(idNumber);
+            dto.setGender(gender);
+            dto.setInsurance(insurance);
+            dto.setProvince(province);
+            dto.setDistrict(district);
+            dto.setWard(ward);
+            dto.setEthnic(ethnic);
+            dto.setReferralCode(referralCode);
+
+            Patient patient = patientService.updatePatientInfoWithAvatar(email, dto, avatar);
+
+            response.put("success", true);
+            response.put("message", "Cập nhật thông tin thành công!");
+            response.put("avatarUrl", patient.getAvatar());
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/json; charset=UTF-8")
+                    .body(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Cập nhật thất bại: " + e.getMessage());
+            response.put("avatarUrl", null);
+
             return ResponseEntity.status(400)
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .body(response);
