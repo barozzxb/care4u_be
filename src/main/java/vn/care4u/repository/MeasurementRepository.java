@@ -1,11 +1,17 @@
 package vn.care4u.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import vn.care4u.entity.Measurement;
-import vn.care4u.entity.Patient;
 
-import java.util.Optional;
+import java.util.List;
 
+@Repository
 public interface MeasurementRepository extends JpaRepository<Measurement, Long> {
-    Optional<Measurement> findTopByPatientOrderByTimestampDesc(Patient patient);
+
+    // Hàm này giúp tìm sinh hiệu theo ID phiếu khám (sau này dùng để xem lại chi tiết)
+    List<Measurement> findByMedicalRecordId(Long medicalRecordId);
+
+    // Hàm này giúp tìm tất cả lịch sử đo của bệnh nhân (để vẽ biểu đồ sức khỏe)
+    List<Measurement> findByPatientIdOrderByTimeDesc(Long patientId);
 }

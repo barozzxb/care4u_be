@@ -21,13 +21,15 @@ public interface AccountService {
 
 	long count();
 
-	Page<Account> findAll(Pageable pageable);
+	Page<AccountDTO> findAll(Pageable pageable);
 
 	List<AccountDTO> findActiveAccounts();
 
 	long countActiveAccounts();
 
 	List<AccountDTO> findRecentAccounts();
+
+	void deActive(String id);
 
 
 }

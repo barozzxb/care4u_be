@@ -19,6 +19,7 @@ public class PatientResponseDTO {
     private String lastname;
     private String phonenum;
     
+    // Format LocalDate thành string yyyy-MM-dd khi trả về JSON
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
     

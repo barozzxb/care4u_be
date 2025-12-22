@@ -17,6 +17,8 @@ import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -54,38 +56,28 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/api/v1/auth/**","/api/v1/common/otp/**", "/api/v1/accounts/**").permitAll()
+						.requestMatchers("/api/v1/departments/**").hasAnyRole("ADMIN", "STAFF")
 						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-=======
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/common/otp/**").permitAll()
-                .requestMatchers("/api/v1/departments/**").permitAll()
-                .requestMatchers("/api/departments/**").permitAll()
-                .requestMatchers("/api/doctors/**").permitAll()
-                .requestMatchers("/uploads/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/").permitAll()
+						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/v1/appointments/**").authenticated()
+            .requestMatchers("/api/appointments/**").authenticated()
 
-                .requestMatchers("/api/v1/appointments/**").authenticated()
-                .requestMatchers("/api/appointments/**").authenticated()
-
-                .requestMatchers("/api/v1/patient/**").permitAll()
-                .requestMatchers("/api/v1/notification/**").permitAll()
-                
-
-                .anyRequest().permitAll()
-            )
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
+            .requestMatchers("/api/v1/patient/**").permitAll()
+            .requestMatchers("/api/v1/notification/**").permitAll()
+						.requestMatchers("/api/v1/patient/**").permitAll()
+						.requestMatchers("/uploads/**").permitAll()
+						.requestMatchers("/").permitAll()
+						.anyRequest().authenticated())
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 }
+

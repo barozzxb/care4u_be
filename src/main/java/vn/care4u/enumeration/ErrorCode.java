@@ -5,8 +5,6 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-	NULL_INFORMATION ("Vui lòng điền tất cả các trường"),
-	
 	ACCOUNT_NOT_FOUND ("Tài khoản không tồn tại"),
 	INVALID_CREDENTIALS ("Thông tin đăng nhập không hợp lệ"),
 	INVALID_INFORMATION ("Thông tin không chính xác"),
@@ -33,8 +31,13 @@ public enum ErrorCode {
 	
 	
 	DEPARTMENT_NOT_FOUND("Chuyên khoa không tồn tại"), 
-  
-	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"),;
+
+	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"), 
+	
+	ADMIN_NOT_FOUND("Admin not found"), INVALID_IMAGE("Invalid Image"), FILE_TOO_LARGE("File too large"), ;
+	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"),
+
+	NULL_INFORMATION("Không có thông tin");
 
 
 	

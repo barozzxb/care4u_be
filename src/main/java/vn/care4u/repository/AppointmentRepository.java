@@ -3,6 +3,8 @@ package vn.care4u.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import vn.care4u.entity.Appointment;
 import vn.care4u.entity.Doctor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

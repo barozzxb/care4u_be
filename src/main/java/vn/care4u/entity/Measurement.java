@@ -5,44 +5,40 @@ import java.sql.Timestamp;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
+@Table(name = "measurement")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Entity
-@Table(name = "measurements")
-public class Measurement implements Serializable {
+public class Measurement {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private static final long serialVersionUID = 1L;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "patient_id")
+	private Patient patient;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	// Link sinh hiệu này với phiếu khám nào
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "medical_record_id")
+	private MedicalRecord medicalRecord;
 
-    @Column(columnDefinition = "double")
-    private double height;
+	private LocalDateTime time;
 
-    @Column(columnDefinition = "double")
-    private double weight;
+	// --- CHỈ SỐ ---
+	private Integer systolicBloodPressure;  // HA tâm thu
+	private Integer diastolicBloodPressure; // HA tâm trương
+	private Double temperature;
+	private Integer heartRate;
+	private Integer respiratoryRate;
+	private Double spo2;
+	private Double height;
+	private Double weight;
+	private Double bmi;
 
-    @Column(columnDefinition = "double")
-    private double bmi;
-
-    @Column(columnDefinition = "nvarchar(255)")
-    private String healthStatus;
-
-    @Column
-    private Double heartRate;
-
-    @Column(columnDefinition = "nvarchar(255)")
-    private String bloodPressure;
-
-    @Column
-    private Double temperature;
-
-    @Column
-    private Timestamp timestamp;
-
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
+	@PrePersist
+	public void prePersist() {
+		this.time = LocalDateTime.now();
+	}
 }

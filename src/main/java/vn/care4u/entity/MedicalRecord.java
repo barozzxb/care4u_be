@@ -1,26 +1,20 @@
 package vn.care4u.entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medicalrecord")
-public class MedicalRecord implements Serializable{
-
-	/**
-	 * 
-	 */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MedicalRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,21 +26,34 @@ public class MedicalRecord implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "patient_id")
 	private Patient patient;
-	
-	@Column(name = "createdat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+
+	@Column(name = "created_at")
 	private LocalDateTime createdAt;
-	
-	@Column(name = "diagnosis", columnDefinition = "nvarchar(255)")
-	private String diagnosis;
 
-	@Column(name = "symptoms", columnDefinition = "nvarchar(255)")
-	private String symptoms;
-	
-	@Column(name = "treatment", columnDefinition = "nvarchar(255)")
-	private String treatment;
-	
-	@Column(name = "notes", columnDefinition = "nvarchar(255)")
-	private String notes;
+	// --- CÁC TRƯỜNG DỮ LIỆU ---
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String symptoms;     // Triệu chứng
 
+	@Column(name = "physical_exam", columnDefinition = "nvarchar(MAX)")
+	private String physicalExam; // Khám thực thể (Mới)
 
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String diagnosis;    // Chẩn đoán
+
+	@Column(name = "conclusion", columnDefinition = "nvarchar(MAX)")
+	private String conclusion;   // Kết luận lâm sàng (Mới)
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String treatment;    // Phác đồ điều trị
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String advice;       // Lời dặn (Mới)
+
+	@Column(columnDefinition = "nvarchar(MAX)")
+	private String notes;        // Ghi chú
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = LocalDateTime.now();
+	}
 }
