@@ -61,7 +61,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = parseJwt(request);
 
         if (jwt == null) {
-            // Không có token → cho qua nhưng không set authentication
             filterChain.doFilter(request, response);
             return;
         }

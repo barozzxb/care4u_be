@@ -10,7 +10,7 @@ import lombok.Setter;
 public class CreateMedicalRecordRequest {
     private Long patientId;
 
-    // --- 1. NHÓM SINH HIỆU (MEASUREMENT) ---
+    // sinh hieu
     private Integer systolicBP;      // Huyết áp tâm thu
     private Integer diastolicBP;     // Huyết áp tâm trương
     private Double temperature;      // Nhiệt độ
@@ -19,14 +19,14 @@ public class CreateMedicalRecordRequest {
     private Double spo2;             // SpO2
     private Double height;           // Chiều cao
     private Double weight;           // Cân nặng
-    private Double bmi;              // BMI (FE gửi lên thì hứng, ko thì thôi)
+    private Double bmi;              // BMI
 
-    // --- 2. NHÓM KHÁM & CHẨN ĐOÁN (MEDICAL RECORD) ---
+    // chan doan
     private String symptoms;         // Triệu chứng
-    private String physicalExam;     // Khám thực thể (Mới)
+    private String physicalExam;     // Khám thực thể
     private String diagnosis;        // Chẩn đoán
-    private String conclusion;       // Kết luận lâm sàng (Mới)
+    private String conclusion;       // Kết luận lâm sàng
     private String treatment;        // Phác đồ điều trị
-    private String advice;           // Lời dặn (Mới)
+    private String advice;           // Lời dặn
     private String notes;            // Ghi chú thêm
 }

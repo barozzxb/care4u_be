@@ -75,7 +75,7 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     public List<AppointmentDTO> listAppointments(String q) {
         Long doctorId = currentUser.currentDoctorId();
         var list = (q == null || q.isBlank())
-                ? appointmentRepo.findByDoctorIdOrderByTimeAsc(doctorId)
+                ? appointmentRepo.findByDoctorIdOrderByDateAscTimeAsc(doctorId)
                 : appointmentRepo.search(doctorId, q.trim());
 
         return list.stream().map(a -> AppointmentDTO.builder()
@@ -177,10 +177,10 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         }
 
         if (req.getDate() != null)
-            appt.setDate(LocalDate.parse(req.getDate())); // nếu date là dạng "2025-12-06"
+            appt.setDate(LocalDate.parse(req.getDate()));
 
         if (req.getTime() != null)
-            appt.setTime(LocalTime.parse(req.getTime())); // dạng "15:05"
+            appt.setTime(LocalTime.parse(req.getTime()));
 
         if (req.getPlace() != null)
             appt.setPlace(req.getPlace());
@@ -202,29 +202,24 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         var patient = patientRepo.findById(req.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-        // 1. TẠO & LƯU PHIẾU KHÁM (MEDICAL RECORD)
         var r = new MedicalRecord();
         r.setDoctor(doctor);
         r.setPatient(patient);
 
-        // Map các trường Text
         r.setSymptoms(req.getSymptoms());
-        r.setPhysicalExam(req.getPhysicalExam()); // Mới
+        r.setPhysicalExam(req.getPhysicalExam());
         r.setDiagnosis(req.getDiagnosis());
-        r.setConclusion(req.getConclusion());     // Mới
+        r.setConclusion(req.getConclusion());
         r.setTreatment(req.getTreatment());
-        r.setAdvice(req.getAdvice());             // Mới
+        r.setAdvice(req.getAdvice());
         r.setNotes(req.getNotes());
 
-        // Lưu xuống DB trước để có ID
         r = recordRepo.save(r);
 
-        // 2. TẠO & LƯU SINH HIỆU (MEASUREMENT) - NẾU CÓ DỮ LIỆU
-        // Kiểm tra sơ bộ xem có nhập sinh hiệu không để tránh lưu rác
         if (hasMeasurementData(req)) {
             var m = new Measurement();
             m.setPatient(patient);
-            m.setMedicalRecord(r); // Link vào phiếu khám vừa tạo
+            m.setMedicalRecord(r);
 
             m.setSystolicBloodPressure(req.getSystolicBP());
             m.setDiastolicBloodPressure(req.getDiastolicBP());

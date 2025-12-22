@@ -21,8 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Patient extends User {
     
     private static final long serialVersionUID = 1L;
-    
-    // Email để liên hệ
+
     @Column(name = "email", columnDefinition = "nvarchar(255)")
     private String email;
     
