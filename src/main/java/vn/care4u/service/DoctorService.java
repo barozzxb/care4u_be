@@ -22,4 +22,5 @@ public interface DoctorService {
 	  Doctor save(Doctor entity);
 	  boolean existsById(Long id);
 
+    List<DoctorDTO> mapToDTOList(List<Doctor> doctors);
 }

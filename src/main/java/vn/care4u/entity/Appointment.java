@@ -1,6 +1,7 @@
 package vn.care4u.entity;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

@@ -7,5 +7,4 @@ import vn.care4u.entity.Department;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, String> {
-
 }
