@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -51,7 +52,8 @@ public class Account implements Serializable{
 	
 	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Admin admin;
-	
+
+	@JsonIgnore
 	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Doctor doctor;
 	

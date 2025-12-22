@@ -1,5 +1,6 @@
 package vn.care4u.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class MedicalRecord implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "patient_id")
+	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 	private Patient patient;
 
 	@Column(name = "created_at")
@@ -50,6 +52,34 @@ public class MedicalRecord implements Serializable {
 
 	@Column(columnDefinition = "nvarchar(3000)")
 	private String notes;        // Ghi chú
+
+	@Column(name = "systolic_bp")
+	private Integer systolicBP;
+
+	@Column(name = "diastolic_bp")
+	private Integer diastolicBP;
+
+	@Column(name = "temperature")
+	private Double temperature;
+
+	@Column(name = "heart_rate")
+	private Integer heartRate;
+
+	@Column(name = "respiratory_rate")
+	private Integer respiratoryRate;
+
+	@Column(name = "spo2")
+	private Double spo2;
+
+	@Column(name = "height")
+	private Double height;
+
+	@Column(name = "weight")
+	private Double weight;
+
+	@Column(name = "bmi")
+	private Double bmi;
+
 
 	@PrePersist
 	public void prePersist() {

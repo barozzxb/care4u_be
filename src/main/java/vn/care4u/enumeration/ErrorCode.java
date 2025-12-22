@@ -12,6 +12,9 @@ public enum ErrorCode {
 	ACCOUNT_EXISTED("Tài khoản đã tồn tại"), UNEXPECTED_ERROR("Lỗi không mong đợi"), UNAUTHORIZED("Yêu cầu trái phép"),
 	NOT_FOUND("Không tìm thấy"),
 
+	DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"), 
+	
+	ADMIN_NOT_FOUND("Admin not found"), INVALID_IMAGE("Invalid Image"), FILE_TOO_LARGE("File too large"),
 	OTP_EXPIRED("Mã OTP đã hết hạn"), MAX_OTP_ATTEMPTS_EXCEEDED("Vượt quá số lần thử mã OTP"),
 
 	NOTIFICATION_NOT_FOUND("Thông báo không tồn tại"),

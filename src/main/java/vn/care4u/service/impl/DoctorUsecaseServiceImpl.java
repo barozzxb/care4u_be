@@ -12,6 +12,7 @@ import vn.care4u.enumeration.ErrorCode;
 import vn.care4u.exception.GeneralException;
 import vn.care4u.model.dto.AppointmentDTO;
 import vn.care4u.model.dto.DoctorProfileDTO;
+import vn.care4u.model.dto.MedicalRecordDTO;
 import vn.care4u.model.request.CreateAppointmentRequest;
 import vn.care4u.model.request.CreateMedicalRecordRequest;
 import vn.care4u.model.request.CreatePrescriptionRequest;
@@ -41,6 +42,37 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
 //    private final DrugRepository drugRepo;
 
     private final MeasurementRepository measurementRepo;
+
+    @Override
+    public MedicalRecordDTO toDTO(MedicalRecord r) {
+        var dto = new MedicalRecordDTO();
+
+        dto.setId(r.getId());
+        dto.setCreatedAt(r.getCreatedAt());
+
+        dto.setSymptoms(r.getSymptoms());
+        dto.setPhysicalExam(r.getPhysicalExam());
+        dto.setDiagnosis(r.getDiagnosis());
+        dto.setConclusion(r.getConclusion());
+        dto.setTreatment(r.getTreatment());
+        dto.setAdvice(r.getAdvice());
+        dto.setNotes(r.getNotes());
+
+        // Doctor
+        if (r.getDoctor() != null) {
+            dto.setDoctorId(r.getDoctor().getId());
+            dto.setDoctorName(r.getDoctor().getFirstname() + " " + r.getDoctor().getLastname());
+        }
+
+        // Patient
+        if (r.getPatient() != null) {
+            dto.setPatientId(r.getPatient().getId());
+            dto.setPatientName(r.getPatient().getFirstname() + " " + r.getPatient().getLastname());
+        }
+
+        return dto;
+    }
+
 
     @Override
     public List<AppointmentDTO> listAppointments(String q) {
@@ -256,7 +288,7 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
 
     @Override
     public List<MedicalRecord> patientRecords(Long patientId) {
-        return List.of();
+        return recordRepo.findByPatientIdOrderByCreatedAtDesc(patientId);
     }
 
     @Override

@@ -4,6 +4,7 @@ import vn.care4u.entity.MedicalRecord;
 import vn.care4u.entity.Prescription;
 import vn.care4u.model.dto.AppointmentDTO;
 import vn.care4u.model.dto.DoctorProfileDTO;
+import vn.care4u.model.dto.MedicalRecordDTO;
 import vn.care4u.model.request.CreateAppointmentRequest;
 import vn.care4u.model.request.CreateMedicalRecordRequest;
 import vn.care4u.model.request.CreatePrescriptionRequest;
@@ -37,4 +38,6 @@ public interface DoctorUsecaseService {
 
     DoctorProfileDTO getMyProfile();
     DoctorProfileDTO updateMyProfile(DoctorProfileDTO dto);
+    MedicalRecordDTO toDTO(MedicalRecord record);
+
 }
