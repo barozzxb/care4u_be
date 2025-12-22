@@ -14,7 +14,6 @@ import vn.care4u.model.dto.DepartmentDTO;
 import vn.care4u.repository.DepartmentRepository;
 import vn.care4u.service.DepartmentService;
 
-
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 

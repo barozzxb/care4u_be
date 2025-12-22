@@ -1,10 +1,9 @@
 package vn.care4u.entity;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "measurement")

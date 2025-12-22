@@ -55,11 +55,13 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         dto.setAdvice(r.getAdvice());
         dto.setNotes(r.getNotes());
 
+        // Doctor
         if (r.getDoctor() != null) {
             dto.setDoctorId(r.getDoctor().getId());
             dto.setDoctorName(r.getDoctor().getFirstname() + " " + r.getDoctor().getLastname());
         }
 
+        // Patient
         if (r.getPatient() != null) {
             dto.setPatientId(r.getPatient().getId());
             dto.setPatientName(r.getPatient().getFirstname() + " " + r.getPatient().getLastname());
