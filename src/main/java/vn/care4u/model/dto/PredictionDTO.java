@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class PredictionDTO {
-
+	private Long id;
 	private String symptoms;
 	private String prediction;
 	private Timestamp datetime;

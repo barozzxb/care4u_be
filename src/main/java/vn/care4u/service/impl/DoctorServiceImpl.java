@@ -15,8 +15,6 @@ import vn.care4u.model.dto.DoctorDTO;
 import vn.care4u.repository.DoctorRepository;
 import vn.care4u.service.DoctorService;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService{

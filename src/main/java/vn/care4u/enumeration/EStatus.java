@@ -9,7 +9,7 @@ public enum EStatus {
 	APPROVED("Đã chấp nhận"), 
 	REJECTED("Đã từ chối"), 
 	COMPLETED("Đã hoàn thành"), 
-	CANCELED ("Đã hủy"),
+	CANCELLED ("Đã hủy"),
 	IN_PROGRESS("Đang tiến hành");
 	
 	private String value;

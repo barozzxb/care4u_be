@@ -36,10 +36,7 @@ public class PatientResponseDTO {
     private String email;
     private String accountEmail;
     
-    /**
-     * Chuyển đổi từ Entity sang DTO
-     * Tránh circular reference khi serialize JSON
-     */
+
     public static PatientResponseDTO fromEntity(Patient patient) {
         if (patient == null) {
             return null;

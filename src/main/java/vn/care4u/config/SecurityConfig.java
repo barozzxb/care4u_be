@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
@@ -57,7 +56,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -73,6 +71,8 @@ public class SecurityConfig {
             .requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("ROLE_DOCTOR")
             .requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/api/v1/patient/**").permitAll()
+						.requestMatchers("/api/v1/posts**").permitAll()
+						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
 						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll()
 						.anyRequest().authenticated())

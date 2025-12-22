@@ -27,6 +27,7 @@ public enum ErrorCode {
     DEPARTMENT_NOT_FOUND("Chuyên khoa không tồn tại"),
     DEPARTMENT_ALREADY_EXISTS("Chuyên khoa đã tồn tại"),
     NOTIFICATION_NOT_FOUND("Thông báo không tồn tại"),
+    POST_NOT_FOUND("Không tìm thấy bài viết"),
 
     // ===== ADMIN =====
     ADMIN_NOT_FOUND("Admin not found"),
@@ -45,5 +46,9 @@ public enum ErrorCode {
 
     ErrorCode(String message) {
         this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }
