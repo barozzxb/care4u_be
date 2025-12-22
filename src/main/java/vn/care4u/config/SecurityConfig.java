@@ -72,6 +72,8 @@ public class SecurityConfig {
             .requestMatchers("/api/v1/patient/**").permitAll()
             .requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/api/v1/patient/**").permitAll()
+						.requestMatchers("/api/v1/posts**").permitAll()
+						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
 						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll()
 						.anyRequest().authenticated())

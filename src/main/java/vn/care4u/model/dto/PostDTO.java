@@ -11,9 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class PredictionDTO {
+public class PostDTO {
 	private Long id;
-	private String symptoms;
-	private String prediction;
-	private Timestamp datetime;
+
+	private Timestamp created;
+
+	private Timestamp updated;
+
+	private String title;
+
+	private String type;
+
+	private String content;
+
+	private String image;
+	
+	private String account_email;
 }
