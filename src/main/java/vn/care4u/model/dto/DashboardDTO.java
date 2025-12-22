@@ -1,7 +1,7 @@
 package vn.care4u.model.dto;
 
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class DepartmentDTO {
+public class DashboardDTO {
 
-	private String id;
-	private String name;
-	private String description;
-	private Timestamp createdAt;
-	private List<DoctorDTO> doctors;
-	
+	private Map<String, Long> numberedData;
+	private List<Map<String, List<Long>>> chartData;
+	private List<AccountDTO> recentAccounts;
 }

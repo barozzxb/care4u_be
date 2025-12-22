@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class AccountDTO {
 
 	private String email;
+	private String role;
+	private boolean status;
 	
 }

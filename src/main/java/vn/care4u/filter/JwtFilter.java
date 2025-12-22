@@ -14,6 +14,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -26,61 +28,96 @@ import vn.care4u.utils.JwtUtils;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-	private JwtUtils jwtUtils;
-	private final AccountDetailServiceImpl accDetailServ;
-	
-	public JwtFilter(JwtUtils jwtUtils, AccountDetailServiceImpl accDetailServ) {
-		this.jwtUtils = jwtUtils;
-		this.accDetailServ = accDetailServ;
-	}
-	
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUsernameFromJwtToken(jwt);
-                var userDetails = accDetailServ.loadUserByUsername(username);
-                
-                Key key = Keys.hmacShaKeyFor(jwtUtils.getSecretKeyBytes()); // bạn có thể thêm method getSecretKeyBytes() vào JwtUtils
-    	        Claims claims = Jwts.parserBuilder()
-    	        	.setSigningKey(key)
-    	                .build()
-    	                .parseClaimsJws(jwt)
-    	                .getBody();
-    	
-    	            String role = claims.get("role", String.class);
-    	            List<GrantedAuthority> authorities = List.of(
-    	                new SimpleGrantedAuthority("ROLE_" + role) // ví dụ: ROLE_APPLICANT
-    	            );
+    private final JwtUtils jwtUtils;
+    private final AccountDetailServiceImpl accDetailServ;
 
+    public JwtFilter(JwtUtils jwtUtils, AccountDetailServiceImpl accDetailServ) {
+        this.jwtUtils = jwtUtils;
+        this.accDetailServ = accDetailServ;
+    }
 
-                /*var authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));*/
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-		var authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, authorities);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-		    
-                // Đặt vào SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        String path = request.getServletPath();
+        System.out.println("JWT FILTER PATH = " + path);
+
+        // BYPASS những route không cần JWT
+        if (path.startsWith("/api/v1/auth")
+                || path.startsWith("/api/v1/common/otp")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/swagger-ui.html")
+                || path.startsWith("/uploads")
+                || path.equals("/")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String jwt = parseJwt(request);
+
+        if (jwt == null) {
+            // Không có token → cho qua nhưng không set authentication
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            if (!jwtUtils.validateJwtToken(jwt)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                return;
             }
-        } catch (Exception e) {
-            System.err.println("Không thể thiết lập xác thực người dùng: " + e);
+
+            String username = jwtUtils.getUsernameFromJwtToken(jwt);
+            var userDetails = accDetailServ.loadUserByUsername(username);
+
+            Key key = Keys.hmacShaKeyFor(jwtUtils.getSecretKeyBytes());
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
+
+            String role = claims.get("role", String.class);
+            List<GrantedAuthority> authorities =
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, authorities);
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (ExpiredJwtException ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
+            return;
+
+        } catch (JwtException ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+            return;
+
+        } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication error");
+            return;
         }
 
         filterChain.doFilter(request, response);
-		
-	}
-	
-	private String parseJwt(HttpServletRequest request) {
+    }
+
+    private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7);
         }
         return null;
     }
-
 }
