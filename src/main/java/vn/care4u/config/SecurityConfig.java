@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
@@ -57,7 +56,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -68,6 +66,11 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/v1/appointments/**").authenticated()
+            .requestMatchers("/api/appointments/**").authenticated()
+
+            .requestMatchers("/api/v1/patient/**").permitAll()
+            .requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/api/v1/patient/**").permitAll()
 						.requestMatchers("/api/v1/posts**").permitAll()
 						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
