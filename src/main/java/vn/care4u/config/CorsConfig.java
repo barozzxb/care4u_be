@@ -1,12 +1,13 @@
 package vn.care4u.config;
 
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class CorsConfig {
@@ -14,28 +15,17 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        
-        // Frontend allowed origins
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "https://welcare4u.vercel.app"
         ));
-        
-        // HTTP methods allowed
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        
-        // Headers allowed
         config.setAllowedHeaders(List.of("*"));
-        
-        // Credentials (cookies, auth headers)
         config.setAllowCredentials(true);
-        
-        // Cache preflight response
         config.setMaxAge(3600L);
-
-        // Apply to all paths
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", configuration);
+        
         return source;
     }
 }

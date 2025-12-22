@@ -15,12 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-
 @Entity
 @Table(name = "department")
 public class Department implements Serializable{
@@ -45,7 +46,5 @@ public class Department implements Serializable{
 
 	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Doctor> doctors;
-	
-	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Staff> staffs;
+
 }

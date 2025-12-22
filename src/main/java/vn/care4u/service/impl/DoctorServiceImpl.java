@@ -1,15 +1,19 @@
 package vn.care4u.service.impl;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import vn.care4u.entity.Doctor;
+import lombok.RequiredArgsConstructor;
 
 import vn.care4u.entity.Doctor;
 import vn.care4u.model.dto.AppointmentDTO;
 import vn.care4u.model.dto.DoctorDTO;
 import vn.care4u.repository.DoctorRepository;
 import vn.care4u.service.DoctorService;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +58,11 @@ public class DoctorServiceImpl implements DoctorService{
 				.experience(doctor.getExperience())
 				.workinghour(doctor.getWorkinghour())
 				.build();
+	}
+
+	@Override
+	public List<DoctorDTO> mapToDTOList(List<Doctor> doctors) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

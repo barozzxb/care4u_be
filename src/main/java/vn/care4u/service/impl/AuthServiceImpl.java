@@ -14,7 +14,6 @@ import vn.care4u.entity.Account;
 import vn.care4u.entity.Admin;
 import vn.care4u.entity.Doctor;
 import vn.care4u.entity.Patient;
-import vn.care4u.entity.Staff;
 import vn.care4u.enumeration.ERole;
 import vn.care4u.enumeration.ErrorCode;
 import vn.care4u.exception.GeneralException;
@@ -26,8 +25,6 @@ import vn.care4u.service.AdminService;
 import vn.care4u.service.AuthService;
 import vn.care4u.service.DoctorService;
 import vn.care4u.service.PatientService;
-import vn.care4u.service.RedisService;
-import vn.care4u.service.StaffService;
 import vn.care4u.service.UserDetailService;
 import vn.care4u.utils.JwtUtils;
  
@@ -47,16 +44,12 @@ public class AuthServiceImpl implements AuthService{
 	DoctorService doctorServ;
 	
 	@Autowired
-	StaffService staffServ;
-	
-	@Autowired
 	UserDetailService userDetailServ;
 	
 	private final JwtUtils jwtUtil;
 	
 	private final PasswordEncoder passwordEncoder;
 	
-	private final RedisService redisService;
 	
 	public Optional<Account> findById(String id) {
 		return accRepo.findById(id);
@@ -90,35 +83,32 @@ public class AuthServiceImpl implements AuthService{
 		String token = jwtUtil.generateToken(acc.getEmail(), acc.getRole());
 		String refreshToken = jwtUtil.generateRefreshToken(acc.getEmail());
 		
-		String redisKey = "refreshToken:" + acc.getEmail();
-		redisService.set(redisKey, refreshToken, jwtUtil.getJwtRefreshExpirationMs(), TimeUnit.MILLISECONDS);
 		
 		UserDetailDTO dto = userDetailServ.getDetail(acc);
-		return new AuthResponse(token, refreshToken, acc.getStatus(), acc.getRole().name(), dto);
+		return new AuthResponse(token, acc.getStatus(), acc.getRole().name(), dto);
 	}
 	
 	@Override
 	public void logout(String email) {
-		String redisKey = "refreshToken:" + email;
-		redisService.delete(redisKey);
+
 	}
 	
-	@Override
-	public String refreshToken(String refreshToken) {
-		if(!jwtUtil.validateJwtToken(refreshToken)) {
-			throw new GeneralException(ErrorCode.INVALID_TOKEN);
-		}
-		
-		String email = jwtUtil.getUsernameFromJwtToken(refreshToken);
-		String redisKey = "refreshToken:" + email;
-		String storedRefreshToken = redisService.get(redisKey);
-		if(storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
-			throw new GeneralException(ErrorCode.INVALID_TOKEN);
-		}
-		Account acc = accRepo.findById(email).orElseThrow(() -> new GeneralException(ErrorCode.ACCOUNT_NOT_FOUND));
-		String newToken = jwtUtil.generateToken(acc.getEmail(), acc.getRole());
-		return newToken;
-	}
+//	@Override
+//	public String refreshToken(String refreshToken) {
+//		if(!jwtUtil.validateJwtToken(refreshToken)) {
+//			throw new GeneralException(ErrorCode.INVALID_TOKEN);
+//		}
+//		
+//		String email = jwtUtil.getUsernameFromJwtToken(refreshToken);
+//		String redisKey = "refreshToken:" + email;
+//		String storedRefreshToken = redisService.get(redisKey);
+//		if(storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+//			throw new GeneralException(ErrorCode.INVALID_TOKEN);
+//		}
+//		Account acc = accRepo.findById(email).orElseThrow(() -> new GeneralException(ErrorCode.ACCOUNT_NOT_FOUND));
+//		String newToken = jwtUtil.generateToken(acc.getEmail(), acc.getRole());
+//		return newToken;
+//	}
 	
 	@Transactional(rollbackOn = Exception.class)
 	@Override
@@ -161,13 +151,6 @@ public class AuthServiceImpl implements AuthService{
 				newDoctor.setAvatar(fileUrl2);
 				newDoctor.setAccount(newAcc);
 				doctorServ.save(newDoctor);
-				break;
-			case STAFF:
-				Staff newStaff = new Staff();
-				String fileUrl3 = "/uploads/avatar/user_default.png";
-				newStaff.setAvatar(fileUrl3);
-				newStaff.setAccount(newAcc);
-				staffServ.save(newStaff);
 				break;
 			default:
 				throw new GeneralException(ErrorCode.INVALID_INFORMATION);
