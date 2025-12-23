@@ -10,6 +10,7 @@ import vn.care4u.service.MeasurementService;
 import vn.care4u.service.PatientService;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Service
 public class MeasurementServiceImpl implements MeasurementService {
@@ -37,7 +38,7 @@ public class MeasurementServiceImpl implements MeasurementService {
         measurement.setHeartRate(dto.getHeartRate());
         measurement.setBloodPressure(dto.getBloodPressure());
         measurement.setTemperature(dto.getTemperature());
-        measurement.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        measurement.setTime(LocalDateTime.now());
         measurement.setPatient(patient);
 
         return measurementRepo.save(measurement);
@@ -46,7 +47,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public Measurement getLatestMeasurement(String email) {
         Patient patient = patientService.getPatientById(email);
-        return measurementRepo.findTopByPatientOrderByTimestampDesc(patient).orElse(null);
+        return measurementRepo.findByPatientIdOrderByTimeDesc(patient.getId()).getFirst();
     }
 
     private String calculateHealthStatus(double bmi) {

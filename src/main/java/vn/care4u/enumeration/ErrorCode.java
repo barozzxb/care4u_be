@@ -1,8 +1,10 @@
 package vn.care4u.enumeration;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum ErrorCode {
 
     // ===== AUTH / ACCOUNT =====
@@ -43,8 +45,4 @@ public enum ErrorCode {
     UNEXPECTED_ERROR("Lỗi không mong đợi");
 
     private final String message;
-
-    public String getMessage() {
-        return message;
-    }
 }

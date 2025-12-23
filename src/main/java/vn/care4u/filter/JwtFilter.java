@@ -45,7 +45,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (path.startsWith("/api/v1/auth/") ||
             path.startsWith("/api/v1/common/otp/") ||
-            path.startsWith("/api/v1/departments/") ||
             path.startsWith("/api/departments/") ||
             path.startsWith("/api/doctors/") ||
             path.startsWith("/uploads/") ||

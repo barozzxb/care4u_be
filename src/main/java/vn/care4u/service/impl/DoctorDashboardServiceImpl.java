@@ -66,7 +66,7 @@ public class DoctorDashboardServiceImpl implements DoctorDashboardService {
                 .stream()
                 .map(a -> TodayAppointmentDTO.builder()
                         .id(a.getId())
-                        .time(a.getDateTime().toLocalTime().format(timeFmt))
+                        .time(a.getTime().format(timeFmt))
                         .patientName(
                                 a.getPatient().getLastname() + " " +
                                         a.getPatient().getFirstname()

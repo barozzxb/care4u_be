@@ -2,41 +2,58 @@ package vn.care4u.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "measurement")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Measurement {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Data
+@Entity
+@Table(name = "measurements")
+public class Measurement implements Serializable {
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "patient_id")
-	private Patient patient;
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(columnDefinition = "double")
+    private double height;
+
+    @Column(columnDefinition = "double")
+    private double weight;
+
+    @Column(columnDefinition = "double")
+    private double bmi;
+
+    @Column(columnDefinition = "nvarchar(255)")
+    private String healthStatus;
+
+    @Column
+    private int heartRate;
+
+    @Column(columnDefinition = "nvarchar(255)")
+    private String bloodPressure;
+
+    @Column
+    private Double temperature;
+
+    @Column
+    private LocalDateTime time;
+    
+    private Integer systolicBloodPressure;
+	private Integer diastolicBloodPressure;
+	private Integer respiratoryRate;
+	private Double spo2;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "medical_record_id")
 	private MedicalRecord medicalRecord;
-
-	private LocalDateTime time;
-
-	private Integer systolicBloodPressure;  // HA tâm thu
-	private Integer diastolicBloodPressure; // HA tâm trương
-	private Double temperature;
-	private Integer heartRate;
-	private Integer respiratoryRate;
-	private Double spo2;
-	private Double height;
-	private Double weight;
-	private Double bmi;
-
-	@PrePersist
-	public void prePersist() {
-		this.time = LocalDateTime.now();
-	}
+	
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 }

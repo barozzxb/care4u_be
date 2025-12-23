@@ -23,66 +23,71 @@ import org.springframework.http.HttpMethod;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final AccountDetailServiceImpl accDetailServ;
-    private final JwtUtils jwtUtils;
-    private final CorsConfigurationSource corsConfigurationSource;
+	private final AccountDetailServiceImpl accDetailServ;
+	private final JwtUtils jwtUtils;
+	private final CorsConfigurationSource corsConfigurationSource;
 
-    public SecurityConfig(AccountDetailServiceImpl accDetailServ, JwtUtils jwtUtils,
-                          CorsConfigurationSource corsConfigurationSource) {
-        this.accDetailServ = accDetailServ;
-        this.jwtUtils = jwtUtils;
-        this.corsConfigurationSource = corsConfigurationSource;
-    }
+	public SecurityConfig(AccountDetailServiceImpl accDetailServ, JwtUtils jwtUtils,
+			CorsConfigurationSource corsConfigurationSource) {
+		this.accDetailServ = accDetailServ;
+		this.jwtUtils = jwtUtils;
+		this.corsConfigurationSource = corsConfigurationSource;
+	}
 
-    @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter(jwtUtils, accDetailServ);
-    }
+	@Bean
+	public JwtFilter jwtFilter() {
+		return new JwtFilter(jwtUtils, accDetailServ);
+	}
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(accDetailServ);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(accDetailServ);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
+	}
 
-    @Bean
-    public AuthenticationManager authManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+	@Bean
+	public AuthenticationManager authManager(AuthenticationConfiguration configuration) throws Exception {
+		return configuration.getAuthenticationManager();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/auth/**",
-                                "/auth/**"
-                        ).permitAll()
-                        .requestMatchers("/api/v1/auth/**","/api/v1/common/otp/**", "/api/v1/accounts/**").permitAll()
-						.requestMatchers("/api/v1/departments/**").hasAnyRole("ADMIN", "STAFF")
-						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-            .requestMatchers("/api/v1/doctor/**").hasAuthority("ROLE_DOCTOR")
-            .requestMatchers("/api/v1/doctor/medical-records/**").hasAuthority("ROLE_DOCTOR")
-            .requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("ROLE_DOCTOR")
-            .requestMatchers("/uploads/**").permitAll()
-						.requestMatchers("/api/v1/patient/**").permitAll()
-						.requestMatchers("/api/v1/posts**").permitAll()
+						.requestMatchers("/api/v1/auth/**", "/api/v1/common/otp/**", "/api/v1/account/**").permitAll()
+						.requestMatchers("/api/v1/posts/**").permitAll()
+						.requestMatchers("/api/v1/notification/**").permitAll()
+						
+						.requestMatchers("/api/v1/admin/info/**").hasRole("ADMIN")
 						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/admin/dashboard/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/accounts/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/departments/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
+						
+						
+						
+						
+						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/doctor/**").hasAuthority("DOCTOR")
+						.requestMatchers("/api/v1/doctor/medical-records/**").hasAuthority("DOCTOR")
+						.requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("DOCTOR")
+						.requestMatchers("/api/v1/patient/**").hasRole("PATIENT")
+						
 						.requestMatchers("/uploads/**").permitAll()
-						.requestMatchers("/").permitAll()
-						.anyRequest().authenticated())
+						.requestMatchers("/").permitAll().anyRequest()
+						.authenticated())
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 }
-

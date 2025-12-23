@@ -3,7 +3,10 @@ package vn.care4u.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.care4u.entity.*;
+import vn.care4u.entity.Appointment;
+import vn.care4u.entity.Measurement;
+import vn.care4u.entity.MedicalRecord;
+import vn.care4u.entity.Prescription;
 import vn.care4u.enumeration.EStatus;
 import vn.care4u.enumeration.ErrorCode;
 import vn.care4u.exception.GeneralException;
@@ -36,7 +39,7 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     private final PrescriptionItemRepository prescriptionItemRepo;
     private final DoctorRepository doctorRepo;
     private final PatientRepository patientRepo;
-    private final DrugRepository drugRepo;
+//    private final DrugRepository drugRepo;
 
     private final MeasurementRepository measurementRepo;
 
@@ -69,20 +72,19 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
 
         return dto;
     }
-
-
+    
     @Override
     public List<AppointmentDTO> listAppointments(String q) {
         Long doctorId = currentUser.currentDoctorId();
-        var list = (q == null || q.isBlank())
-                ? appointmentRepo.findByDoctorIdOrderByDateAscTimeAsc(doctorId)
+        List<Appointment> list = (q == null || q.isBlank())
+                ? appointmentRepo.findByDoctorIdOrderByTimeAsc(doctorId)
                 : appointmentRepo.search(doctorId, q.trim());
 
         return list.stream().map(a -> AppointmentDTO.builder()
                 .id(a.getId())
                 .patientId(a.getPatient().getId())
                 .patientName(a.getPatient().getFirstname() + " " + a.getPatient().getLastname())
-                .time(a.getDateTime())
+                .time(LocalDateTime.of(a.getDate(), a.getTime()))
                 .status(a.getStatus().name())
                 .reason(a.getNotes())
                 .build()).collect(Collectors.toList());
@@ -97,7 +99,7 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
 
         EStatus newStatus = switch (action.toUpperCase()) {
             case "APPROVE" -> EStatus.APPROVED;
-            case "REJECT" -> EStatus.CANCELED;
+            case "REJECT" -> EStatus.CANCELLED;
             case "DONE" -> EStatus.COMPLETED;
             default -> throw new GeneralException(ErrorCode.INVALID_INFORMATION);
         };
@@ -127,7 +129,7 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
                 .id(a.getId())
                 .patientId(patient.getId())
                 .patientName(patient.getFirstname()+" "+patient.getLastname())
-                .time(a.getDateTime())
+                .time(LocalDateTime.of(a.getDate(), a.getTime()))
                 .place(a.getPlace())
                 .status(a.getStatus().name())
                 .reason(a.getNotes())
@@ -177,10 +179,10 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         }
 
         if (req.getDate() != null)
-            appt.setDate(LocalDate.parse(req.getDate()));
+            appt.setDate(LocalDate.parse(req.getDate())); // nếu date là dạng "2025-12-06"
 
         if (req.getTime() != null)
-            appt.setTime(LocalTime.parse(req.getTime()));
+            appt.setTime(LocalTime.parse(req.getTime())); // dạng "15:05"
 
         if (req.getPlace() != null)
             appt.setPlace(req.getPlace());
@@ -202,24 +204,29 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
         var patient = patientRepo.findById(req.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
+        // 1. TẠO & LƯU PHIẾU KHÁM (MEDICAL RECORD)
         var r = new MedicalRecord();
         r.setDoctor(doctor);
         r.setPatient(patient);
 
+        // Map các trường Text
         r.setSymptoms(req.getSymptoms());
-        r.setPhysicalExam(req.getPhysicalExam());
+        r.setPhysicalExam(req.getPhysicalExam()); // Mới
         r.setDiagnosis(req.getDiagnosis());
-        r.setConclusion(req.getConclusion());
+        r.setConclusion(req.getConclusion());     // Mới
         r.setTreatment(req.getTreatment());
-        r.setAdvice(req.getAdvice());
+        r.setAdvice(req.getAdvice());             // Mới
         r.setNotes(req.getNotes());
 
+        // Lưu xuống DB trước để có ID
         r = recordRepo.save(r);
 
+        // 2. TẠO & LƯU SINH HIỆU (MEASUREMENT) - NẾU CÓ DỮ LIỆU
+        // Kiểm tra sơ bộ xem có nhập sinh hiệu không để tránh lưu rác
         if (hasMeasurementData(req)) {
             var m = new Measurement();
             m.setPatient(patient);
-            m.setMedicalRecord(r);
+            m.setMedicalRecord(r); // Link vào phiếu khám vừa tạo
 
             m.setSystolicBloodPressure(req.getSystolicBP());
             m.setDiastolicBloodPressure(req.getDiastolicBP());
@@ -243,45 +250,49 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     }
 
     @Override
-    @Transactional
     public Prescription createPrescription(CreatePrescriptionRequest req) {
         Long doctorId = currentUser.currentDoctorId();
 
         var doctor = doctorRepo.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
-
         var patient = patientRepo.findById(req.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
         var p = new Prescription();
         p.setDoctor(doctor);
         p.setPatient(patient);
+        // nếu entity có createdAt:
+        try { p.getClass().getMethod("setCreatedAt", LocalDateTime.class); p.setCreatedAt(LocalDateTime.now()); } catch (Exception ignore) {}
+        p = prescriptionRepo.save(p);
 
         if (req.getItems() != null) {
             for (var it : req.getItems()) {
-                var item = new PrescriptionItem();
+                var item = new vn.care4u.entity.PrescriptionItem();
                 item.setPrescription(p);
                 item.setName(it.getName());
                 item.setDose(it.getDose());
                 item.setQuantity(it.getQuantity());
                 item.setNote(it.getNote());
 
-                if (it.getDrugId() != null) {
-                    var drug = drugRepo.findById(it.getDrugId())
-                            .orElseThrow(() -> new RuntimeException("Drug not found: " + it.getDrugId()));
-                    item.setDrug(drug);
-                }
 
-                p.getItems().add(item);
+                // if (it.getDrugId() != null) {
+                //     drugRepo.findById(it.getDrugId()).ifPresent(item::setDrug);
+                // }
+
+                prescriptionItemRepo.save(item);
             }
         }
-
-        return prescriptionRepo.save(p);
+        return p;
     }
 
     @Override
     public List<MedicalRecord> patientRecords(Long patientId) {
-        return recordRepo.findByPatientIdOrderByCreatedAtDesc(patientId);
+        return List.of();
+    }
+
+    @Override
+    public List<Prescription> patientPrescriptions(Long patientId) {
+        return List.of();
     }
 
     @Override
@@ -292,12 +303,5 @@ public class DoctorUsecaseServiceImpl implements DoctorUsecaseService {
     @Override
     public DoctorProfileDTO updateMyProfile(DoctorProfileDTO dto) {
         return null;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Prescription> patientPrescriptions(Long patientId) {
-        Long doctorId = currentUser.currentDoctorId();
-        return prescriptionRepo.findByDoctorIdAndPatientIdOrderByCreatedAtDesc(doctorId, patientId);
     }
 }

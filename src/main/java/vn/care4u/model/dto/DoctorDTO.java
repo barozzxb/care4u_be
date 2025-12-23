@@ -18,6 +18,11 @@ public class DoctorDTO {
     private String firstname;
 
     private String lastname;
+    
+    private String address;
+    
+    private String phonenum;
+    private String avatar;
 
     private String bio;
 
@@ -29,7 +34,9 @@ public class DoctorDTO {
 
     private String workinghour;     
 
-    private Integer patients;     
+    private Integer patients; 
+    
+    private String gender;
 
     private Double rating;        
 

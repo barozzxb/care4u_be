@@ -6,7 +6,7 @@ import lombok.Data;
 public class MeasurementUpdateDTO {
     private double height;
     private double weight;
-    private Double heartRate;
+    private int heartRate;
     private String bloodPressure;
     private Double temperature;
 }

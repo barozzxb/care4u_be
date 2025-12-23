@@ -52,7 +52,7 @@ public class AccountDetail implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return account.getStatus() == false;
+		return account.getStatus();
 	}
 
 	public Account getAccount() {
