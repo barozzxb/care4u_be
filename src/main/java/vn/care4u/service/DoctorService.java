@@ -8,6 +8,9 @@ import vn.care4u.model.request.UpdateDoctorProfileRequest;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface DoctorService {
 
 	boolean existsById(Long id);
@@ -25,5 +28,7 @@ public interface DoctorService {
 	DoctorProfileDTO getMyProfile();
 
 	DoctorProfileDTO updateMyProfile(UpdateDoctorProfileRequest req);
+
+	Page<DoctorDTO> getAllDoctors(Pageable pageable);
 }
 

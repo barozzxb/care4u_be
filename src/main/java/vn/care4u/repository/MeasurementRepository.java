@@ -14,4 +14,5 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     // Hàm này giúp tìm sinh hiệu theo ID phiếu khám (sau này dùng để xem lại chi tiết)
     Optional<Measurement> findByMedicalRecordId(Long medicalRecordId);
     List<Measurement> findByPatientIdOrderByTimeDesc(Long patientId);
+    Optional<Measurement> findTopByPatientOrderByTimestampDesc(Patient patient);
 }

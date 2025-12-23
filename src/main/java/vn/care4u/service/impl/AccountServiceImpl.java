@@ -80,7 +80,12 @@ public class AccountServiceImpl implements AccountService {
 		return accounts.map(this::mapToDTO);
 	}
 	
-
+	@Override
+	public Page<AccountDTO> findAllDoctors(Pageable pageable) {
+		Page<Account> accounts =  accRepo.findByRole(ERole.DOCTOR, pageable);
+		return accounts.map(this::mapToDTO);
+	}
+	
 	@Override
 	public long count() {
 		return accRepo.count();

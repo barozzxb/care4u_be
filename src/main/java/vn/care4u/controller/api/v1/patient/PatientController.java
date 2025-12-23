@@ -7,34 +7,24 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.care4u.entity.Patient;
 import vn.care4u.model.dto.PatientUpdateDTO;
 import vn.care4u.service.PatientService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/patient")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"}, 
-             methods = {RequestMethod.GET, RequestMethod.PUT, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.OPTIONS},
-             allowedHeaders = "*",
-             allowCredentials = "true")
 public class PatientController {
-    
-    private static final Logger log = LoggerFactory.getLogger(PatientController.class);
-    
+
     @Autowired
     private PatientService patientService;
-    
-    // Lấy thông tin bệnh nhân theo email
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> getPatientInfo(@RequestParam String email) {
         Map<String, Object> response = new HashMap<>();
+
         try {
-            log.info("🌐 GET request - Email: {}", email);
-            
             Patient patient = patientService.getPatientById(email);
-            
-            // ⭐ Tạo Map chỉ chứa thông tin cần thiết (không có account, predictions)
+
             Map<String, Object> patientData = new HashMap<>();
             patientData.put("id", patient.getId());
             patientData.put("firstname", patient.getFirstname());

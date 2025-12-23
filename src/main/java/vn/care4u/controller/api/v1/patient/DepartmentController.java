@@ -11,7 +11,7 @@ import vn.care4u.model.dto.DoctorDTO;
 import vn.care4u.service.DepartmentService;
 
 @RestController
-@RequestMapping("/api/departments")
+@RequestMapping("/api/v1/departments")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class DepartmentController {

@@ -42,7 +42,7 @@ public enum ErrorCode {
     NOT_FOUND("Không tìm thấy"),
     NULL_INFORMATION("Không có thông tin"),
     UNKNOWN_ERROR("Lỗi không xác định"),
-    UNEXPECTED_ERROR("Lỗi không mong đợi");
+    UNEXPECTED_ERROR("Lỗi không mong đợi"), DOCTOR_NOT_FOUND("Bác sỹ không tồn tại");
 
     private final String message;
 }

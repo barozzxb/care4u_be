@@ -3,6 +3,8 @@ package vn.care4u.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,11 @@ public class DoctorServiceImpl implements DoctorService {
 	@Override
 	public List<AppointmentDTO> getAppointment(Long doctorId, String q) {
 		throw new UnsupportedOperationException("Not implemented yet");
+	}
+	
+	@Override
+	public Page<DoctorDTO> getAllDoctors(Pageable pageable){
+		return doctorRepo.findAll(pageable).map(this::mapToDTO);
 	}
 
 	@Override

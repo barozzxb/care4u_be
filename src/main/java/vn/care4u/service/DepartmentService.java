@@ -2,6 +2,7 @@ package vn.care4u.service;
 
 import java.util.List;
 
+import vn.care4u.entity.Doctor;
 import vn.care4u.model.dto.DepartmentDTO;
 
 public interface DepartmentService {
@@ -15,4 +16,8 @@ public interface DepartmentService {
     DepartmentDTO getDepartmentById(String id);
 
     List<DepartmentDTO> getAllDepartments();
+
+	void removeDoctorFromDepartment(Long doctorId, String id);
+
+	void addDoctorToDepartment(Long doctorId, String id);
 }

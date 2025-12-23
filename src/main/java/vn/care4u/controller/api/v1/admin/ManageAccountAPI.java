@@ -38,16 +38,6 @@ public class ManageAccountAPI {
 				.build();
 	}
 	
-//	@Operation(summary = "Get account by id", description = "Get account by id")
-//	@GetMapping("/{id}")
-//	public ApiResponse<AccountDTO> getById(@PathVariable String id) {
-//		return ApiResponse.<AccountDTO>builder()
-//				.status(200)
-//				.message("Lấy phòng ban thành công")
-//				.body(accServ.findById(id))
-//				.build();
-//	}
-	
 	@PutMapping("/deactive/{id}")
 	public ApiResponse<Void> lock(@PathVariable String id) {
 		accServ.deActive(id);

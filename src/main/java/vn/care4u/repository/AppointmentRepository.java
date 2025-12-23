@@ -3,6 +3,7 @@ package vn.care4u.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import vn.care4u.entity.Appointment;
 import vn.care4u.entity.Doctor;
+import vn.care4u.entity.Patient;
 import vn.care4u.enumeration.EStatus;
 
 import java.time.LocalDate;
@@ -25,6 +26,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
 	List<Appointment> findByDoctorIdOrderByTimeAsc(Long doctorId);
 
+	Optional<Appointment> findFirstByPatientAndDoctorOrderByDateDesc(Patient patient, Doctor doctor);
+	
 	@Query("""
 			  select a from Appointment a
 			  where a.doctor.id = :doctorId

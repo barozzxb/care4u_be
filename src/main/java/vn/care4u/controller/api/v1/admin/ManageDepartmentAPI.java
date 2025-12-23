@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,7 @@ import vn.care4u.model.response.ApiResponse;
 import vn.care4u.service.DepartmentService;
 
 @RestController
-@RequestMapping("/api/v1/departments")
+@RequestMapping("/api/v1/admin/departments")
 @Tag(name = "Department", description = "Department API for Admin to manage")
 public class ManageDepartmentAPI {
 
@@ -70,6 +71,24 @@ public class ManageDepartmentAPI {
 		return ApiResponse.<Void>builder()
 				.status(200)
 				.message("Xoá phòng ban thành công")
+				.build();
+	}
+	
+	@PutMapping("/{id}/add-doctor")
+	public ApiResponse<Void> addDoctor(@PathVariable String id, @RequestParam("dId") Long doctorId) {
+		depServ.addDoctorToDepartment(doctorId, id);
+		return ApiResponse.<Void>builder()
+				.status(200)
+				.message("Thêm bác sỹ thành công")
+				.build();
+	}
+	
+	@PutMapping("/{id}/remove-doctor")
+	public ApiResponse<Void> removeDoctor(@PathVariable String id, @RequestParam("dId") Long doctorId) {
+		depServ.removeDoctorFromDepartment(doctorId, id);
+		return ApiResponse.<Void>builder()
+				.status(200)
+				.message("Xóa bác sỹ thành công")
 				.build();
 	}
 }

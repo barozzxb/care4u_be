@@ -70,7 +70,7 @@ public class ManagePostAPI {
 	public ApiResponse<Void> deletePost(@PathVariable("id") Long id) {
 		postServ.deletePost(id);
 		return ApiResponse.<Void>builder()
-				.status(201)
+				.status(200)
 				.message("Xóa bài viết thành công")
 				.build();
 	}

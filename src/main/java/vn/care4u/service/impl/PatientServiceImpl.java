@@ -3,8 +3,6 @@ package vn.care4u.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import vn.care4u.entity.Patient;
 import vn.care4u.model.dto.PatientUpdateDTO;
 import vn.care4u.repository.PatientRepository;
@@ -22,8 +20,6 @@ import java.util.Optional;
 @Service
 public class PatientServiceImpl implements PatientService {
 
-    private static final Logger log = LoggerFactory.getLogger(PatientServiceImpl.class);
-
     @Autowired
     private PatientRepository patientRepo;
 
@@ -39,23 +35,16 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient getPatientById(String accountEmail) {
-        log.info("🔍 Tìm kiếm bệnh nhân với email: {}", accountEmail);
-        
-        // Thử tìm theo account.email trước
         Optional<Patient> patientByAccount = patientRepo.findByAccount_Email(accountEmail);
         if (patientByAccount.isPresent()) {
-            log.info("✅ Tìm thấy bệnh nhân qua account.email");
             return patientByAccount.get();
         }
-        
-        // Nếu không có, thử tìm theo patient.email
+
         Optional<Patient> patientByEmail = patientRepo.findByEmail(accountEmail);
         if (patientByEmail.isPresent()) {
-            log.info("✅ Tìm thấy bệnh nhân qua patient.email");
             return patientByEmail.get();
         }
-        
-        log.error("❌ Không tìm thấy bệnh nhân với email: {}", accountEmail);
+
         throw new RuntimeException("Không tìm thấy bệnh nhân với email: " + accountEmail);
     }
 

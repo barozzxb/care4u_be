@@ -11,7 +11,7 @@ import vn.care4u.entity.Doctor;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/doctors")
+@RequestMapping("/api/v1/doctors")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class DoctorController {

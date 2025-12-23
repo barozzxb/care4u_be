@@ -31,5 +31,7 @@ public interface AccountService {
 
 	void deActive(String id);
 
+	Page<AccountDTO> findAllDoctors(Pageable pageable);
+
 
 }

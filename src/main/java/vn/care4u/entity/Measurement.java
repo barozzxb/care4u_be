@@ -44,6 +44,9 @@ public class Measurement implements Serializable {
     @Column
     private LocalDateTime time;
     
+    @Column
+    private Timestamp timestamp;
+    
     private Integer systolicBloodPressure;
 	private Integer diastolicBloodPressure;
 	private Integer respiratoryRate;

@@ -17,8 +17,6 @@ import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
 
-import org.springframework.http.HttpMethod;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -71,17 +69,26 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
 						.requestMatchers("/api/v1/admin/dashboard/**").hasRole("ADMIN")
 						.requestMatchers("/api/v1/accounts/**").hasRole("ADMIN")
-						.requestMatchers("/api/v1/departments/**").hasRole("ADMIN")
+						.requestMatchers("/api/v1/admin/departments/**").hasRole("ADMIN")
 						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
-						
-						
-						
-						
 						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-						.requestMatchers("/api/v1/doctor/**").hasAuthority("DOCTOR")
-						.requestMatchers("/api/v1/doctor/medical-records/**").hasAuthority("DOCTOR")
-						.requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("DOCTOR")
+						.requestMatchers("/api/v1/doctors/**").hasRole("ADMIN")
+						
+						
+						
+						
+						.requestMatchers("/api/v1/doctor/**").hasRole("DOCTOR")
+						.requestMatchers("/api/v1/doctor/medical-records/**").hasRole("DOCTOR")
+						.requestMatchers("/api/v1/doctor/prescriptions/**").hasRole("DOCTOR")
+						.requestMatchers("/api/v1/doctor/appointments/**").hasRole("DOCTOR")
+						.requestMatchers("/api/v1/doctor/posts/**").hasRole("DOCTOR")
+
 						.requestMatchers("/api/v1/patient/**").hasRole("PATIENT")
+						.requestMatchers("/api/v1/doctors/**").hasRole("PATIENT")
+						.requestMatchers("/api/v1/appointments/**").hasRole("PATIENT")
+						.requestMatchers("/api/v1/medicalhistory/**").hasRole("PATIENT")
+						.requestMatchers("/api/v1/patient/predictions/**").hasRole("PATIENT")
+						.requestMatchers("/api/v1/departments/**").hasRole("PATIENT")
 						
 						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll().anyRequest()
