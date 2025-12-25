@@ -22,13 +22,11 @@ public class AppointmentAPI {
 
     private final DoctorUsecaseService svc;
 
-    //Doctor xem va thao tac lich cua minh
     @GetMapping
     public ResponseEntity<?> list(@RequestParam(required = false) String q) {
         return ResponseEntity.ok(svc.listAppointments(q));
     }
 
-    //tao lich
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CreateAppointmentRequest req) {
         log.info("POST /doctor/appointments body={}", req);

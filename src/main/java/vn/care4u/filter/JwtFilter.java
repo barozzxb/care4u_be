@@ -37,22 +37,22 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String path = request.getServletPath();
-        System.out.println("JWT FILTER PATH = " + path);
+        String path = request.getRequestURI();
+        String method = request.getMethod();
 
-        // BYPASS những route không cần JWT
-        if (path.startsWith("/api/v1/auth")
-                || path.startsWith("/api/v1/common/otp")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/swagger-ui")
-                || path.startsWith("/swagger-ui.html")
-                || path.startsWith("/uploads")
-                || path.equals("/")) {
+        if (path.startsWith("/api/v1/auth/") ||
+            path.startsWith("/api/v1/common/otp/") ||
+            path.startsWith("/api/v1/departments/") ||
+            path.startsWith("/api/departments/") ||
+            path.startsWith("/api/doctors/") ||
+            path.startsWith("/uploads/") ||
+            path.startsWith("/v3/api-docs/") ||
+            path.startsWith("/swagger-ui") ||
+            path.equals("/") ||
+            "OPTIONS".equalsIgnoreCase(method)) {
 
             filterChain.doFilter(request, response);
             return;
@@ -61,7 +61,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = parseJwt(request);
 
         if (jwt == null) {
-            // Không có token → cho qua nhưng không set authentication
             filterChain.doFilter(request, response);
             return;
         }

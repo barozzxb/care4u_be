@@ -1,10 +1,9 @@
 package vn.care4u.entity;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "measurement")
@@ -20,14 +19,12 @@ public class Measurement {
 	@JoinColumn(name = "patient_id")
 	private Patient patient;
 
-	// Link sinh hiệu này với phiếu khám nào
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "medical_record_id")
 	private MedicalRecord medicalRecord;
 
 	private LocalDateTime time;
 
-	// --- CHỈ SỐ ---
 	private Integer systolicBloodPressure;  // HA tâm thu
 	private Integer diastolicBloodPressure; // HA tâm trương
 	private Double temperature;

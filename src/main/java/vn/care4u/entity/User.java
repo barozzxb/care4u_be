@@ -45,7 +45,6 @@ public abstract class User implements Serializable {
     @Column(name = "avatar", columnDefinition = "nvarchar(255)")
     protected String avatar;
     
-    // THÊM MỚI: Số CMND/CCCD
     @Column(name = "idNumber", columnDefinition = "nvarchar(50)")
     protected String idNumber;
 }

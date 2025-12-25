@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 import vn.care4u.filter.JwtFilter;
 import vn.care4u.service.impl.AccountDetailServiceImpl;
 import vn.care4u.utils.JwtUtils;
@@ -57,18 +56,27 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/v1/auth/**","/api/v1/common/otp/**", "/api/v1/accounts/**").permitAll()
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/auth/**"
+                        ).permitAll()
+                        .requestMatchers("/api/v1/auth/**","/api/v1/common/otp/**", "/api/v1/accounts/**").permitAll()
 						.requestMatchers("/api/v1/departments/**").hasAnyRole("ADMIN", "STAFF")
 						.requestMatchers("/api/v1/notification/**").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/v1/doctor/**").hasAuthority("ROLE_DOCTOR")
+            .requestMatchers("/api/v1/doctor/medical-records/**").hasAuthority("ROLE_DOCTOR")
+            .requestMatchers("/api/v1/doctor/prescriptions/**").hasAuthority("ROLE_DOCTOR")
+            .requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/api/v1/patient/**").permitAll()
+						.requestMatchers("/api/v1/posts**").permitAll()
+						.requestMatchers("/api/v1/admin/posts/**").hasRole("ADMIN")
 						.requestMatchers("/uploads/**").permitAll()
 						.requestMatchers("/").permitAll()
 						.anyRequest().authenticated())

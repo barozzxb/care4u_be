@@ -1,8 +1,11 @@
 package vn.care4u.service.impl;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.care4u.entity.Patient;
@@ -12,7 +15,6 @@ import vn.care4u.exception.GeneralException;
 import vn.care4u.model.dto.PredictionDTO;
 import vn.care4u.repository.PatientRepository;
 import vn.care4u.repository.PredictionRepository;
-import vn.care4u.service.PatientService;
 import vn.care4u.service.PredictionService;
 
 @Service
@@ -25,16 +27,24 @@ public class PredictionServiceImpl implements PredictionService {
 	PatientRepository patientRepo;
 
 	@Override
-	public List<PredictionDTO> getPredictionByPatientId(Long patientId) {
-		List<Prediction> predictions = predRepo.findByPatientId(patientId);
-		return predictions.stream().map(this::convertToResponse).toList();
+	public Page<PredictionDTO> getPredictionByPatientId(Long patientId, Pageable pageable) {
+		return predRepo.findByPatientId(patientId, pageable).map(this::convertToResponse);
+	}
+	
+	@Override
+	public Page<PredictionDTO> getPredictionByEmail(String email, Pageable pageable) {
+		Patient p = patientRepo.findByAccount_Email(email).orElseThrow(() -> new GeneralException(ErrorCode.INVALID_CREDENTIALS));
+		return predRepo.findByPatientId(p.getId(), pageable).map(this::convertToResponse);
 	}
 
 	@Override
-	public void savePrediction(Long patientId, PredictionDTO prediction) {
+	public void savePrediction(String patientId, PredictionDTO prediction) {
 		try {
+			System.out.println(prediction.getPrediction());
+			System.out.println(prediction.getSymptoms());
+			
 			Prediction pred = new Prediction();
-			Patient patient = patientRepo.findById(patientId)
+			Patient patient = patientRepo.findByAccount_Email(patientId)
 					.orElseThrow(() -> new GeneralException(ErrorCode.PATIENT_NOT_FOUND));
 			pred.setDatetime(prediction.getDatetime());
 			pred.setPrediction(prediction.getPrediction());
@@ -56,7 +66,7 @@ public class PredictionServiceImpl implements PredictionService {
 	}
 
 	private PredictionDTO convertToResponse(Prediction p) {
-		return PredictionDTO.builder().datetime(p.getDatetime()).prediction(p.getPrediction()).symptoms(p.getSymptoms())
+		return PredictionDTO.builder().id(p.getId()).datetime(p.getDatetime()).prediction(p.getPrediction()).symptoms(p.getSymptoms())
 				.build();
 	}
 

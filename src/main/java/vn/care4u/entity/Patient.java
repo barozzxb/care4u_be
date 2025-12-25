@@ -17,12 +17,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "patients")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"appointments", "medicalRecords", "prescriptions"})
 public class Patient extends User {
     
     private static final long serialVersionUID = 1L;
-    
-    // Email để liên hệ
+
     @Column(name = "email", columnDefinition = "nvarchar(255)")
     private String email;
     

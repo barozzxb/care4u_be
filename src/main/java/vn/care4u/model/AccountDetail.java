@@ -55,4 +55,8 @@ public class AccountDetail implements UserDetails {
 		return account.getStatus() == false;
 	}
 
+	public Account getAccount() {
+		return this.account;
+	}
+
 }
