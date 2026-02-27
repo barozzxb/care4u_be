@@ -34,7 +34,7 @@ public class Prediction implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="symptoms", columnDefinition = "nvarchar(255)")
+	@Column(name="symptoms", columnDefinition = "TEXT")
 	private String symptoms;
 	
 	@Column(name="prediction", columnDefinition = "nvarchar(255)")

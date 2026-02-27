@@ -2,7 +2,9 @@ package vn.care4u.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -11,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -49,15 +52,16 @@ public class Account implements Serializable{
 	
 	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Admin admin;
-	
+
+	@JsonIgnore
 	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Doctor doctor;
 	
 	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Patient patient;
 	
-	@OneToOne(mappedBy = "account", orphanRemoval = true, cascade = CascadeType.ALL)
-	private Staff staff;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+	private List<Post> posts;
 	
 	@PrePersist
 	private void onCreate() {

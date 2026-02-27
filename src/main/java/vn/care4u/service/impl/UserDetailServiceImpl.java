@@ -7,12 +7,10 @@ import vn.care4u.entity.Account;
 import vn.care4u.entity.Admin;
 import vn.care4u.entity.Doctor;
 import vn.care4u.entity.Patient;
-import vn.care4u.entity.Staff;
 import vn.care4u.model.dto.UserDetailDTO;
 import vn.care4u.service.AdminService;
 import vn.care4u.service.DoctorService;
 import vn.care4u.service.PatientService;
-import vn.care4u.service.StaffService;
 import vn.care4u.service.UserDetailService;
 
 @Service
@@ -26,9 +24,6 @@ public class UserDetailServiceImpl implements UserDetailService{
 	
 	@Autowired
 	AdminService adminServ;
-	
-	@Autowired
-	StaffService staffServ;
 	
 	@Override
 	public UserDetailDTO getDetail(Account acc) {
@@ -52,12 +47,6 @@ public class UserDetailServiceImpl implements UserDetailService{
 			userDetail.setAvatar(a.getAvatar());
 			userDetail.setFirstname(a.getFirstname());
 			userDetail.setLastname(a.getLastname());
-			break;
-		case STAFF:
-			Staff s = acc.getStaff();
-			userDetail.setAvatar(s.getAvatar());
-			userDetail.setFirstname(s.getFirstname());
-			userDetail.setLastname(s.getLastname());
 			break;
 		default:
 			break;

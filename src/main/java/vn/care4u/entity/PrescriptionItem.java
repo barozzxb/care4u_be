@@ -1,5 +1,6 @@
 package vn.care4u.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class PrescriptionItem {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JsonIgnore
     private Prescription prescription;
 
     @ManyToOne(optional = true)
